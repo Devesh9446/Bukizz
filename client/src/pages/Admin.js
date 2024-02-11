@@ -1,52 +1,37 @@
-import React,{useState} from 'react'
-import styled from 'styled-components'
-import Sections from "../components/Sections/Sections.js"
-import Order from "../components/Order/Order.js"
-import Product from "../components/Product/Product.js"
-import Vendor from "../components/Vendor/Vendor.js"
-import Welcome from "../components/Welcome/Welcome.js"
-import Query from "../components/Query/Query.js"
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import Sections from '../components/Sections/Sections.js';
+import Navbar from '../components/Navbar/Navbar.js';
+import Table from '../components/Table/Table.js';
 
 function Admin() {
-
-  const [current,SetCurrent]=useState("")
-  const handleOnClick=(event)=>{
-    SetCurrent(event)
-  }
-  const renderComponent=()=>{
-    console.log(current)
-    if(current==="Order")
-    {
-      return <Order />
-    }
-    else if(current==="Product")
-    {
-      return <Product />
-    }
-    else if(current==="Vendor")
-    {
-      return <Vendor />
-    }
-    else if(current==="Query")
-    {
-      return <Query />
-    }
-    else{
-      return <Welcome />
-    }
-  }
-
+  const [current, setCurrent] = useState('');
+  const handleOnClick = (event) => {
+    setCurrent(event);
+  };
   return (
     <Container>
-      <Sections handleOnClick={handleOnClick} />
-      {renderComponent()}
+      <div>
+        <Sections handleOnClick={handleOnClick} />
+      </div>
+      <div>
+        <Navbar/>
+        <Container2>
+          <Table current={current} />
+        </Container2>
+      </div>
     </Container>
-  )
+  );
 }
 
-const Container=styled.div`
-display:flex;
-flex-direction:row;
-`
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Container2= styled.div`
+  margin-top:-10vh;
+  margin-left:10vw;
+`;
 
 export default Admin;

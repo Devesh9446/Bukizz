@@ -40,7 +40,7 @@ function Vendor() {
             <th onClick={() => { handleOnClick("Order") }}>Order</th>
             <th onClick={() => { handleOnClick("Out_For_Delivery") }}>OUT FOR DELIVERY</th>
             <th onClick={() => { handleOnClick("Payment") }}>PAYMENT</th>
-            <th onClick={() => { handleOnClick("Process") }}>Process</th>
+            <th onClick={() => { handleOnClick("Process") }}>PROCESS</th>
           </tr>
         </TableHead>
       </table>
@@ -53,13 +53,10 @@ const TableHead = styled.thead`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   th {
-    border-right: 1px solid #ccc; /* Add vertical line between headings */
-    padding: 8px; /* Add padding for better spacing */
-    text-align: center; /* Center align text */
-    cursor: pointer; /* Add pointer cursor */
-  }
-  th:last-child {
-    border-right: none; /* Remove border from the last heading */
+    border-right: 1px solid #ccc;
+    padding: 8px; 
+    text-align: center; 
+    cursor: pointer;
   }
 `;
 
