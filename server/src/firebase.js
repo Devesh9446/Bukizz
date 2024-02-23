@@ -11,5 +11,10 @@ const firebaseConfig = {
   databaseURL:"https://bukizz1-default-rtdb.firebaseio.com/"
 };
 
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+export{
+  app,
+  analytics,
+}
