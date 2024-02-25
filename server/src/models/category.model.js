@@ -11,8 +11,7 @@ class CategoryModel {
         this.description=description; 
         this.offer=offer;
     }
-    
-}
+}  
 
 export{
     CategoryModel,
