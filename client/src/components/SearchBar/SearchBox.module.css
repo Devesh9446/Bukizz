@@ -1,0 +1,47 @@
+.mainConatiner {
+    /* padding: 0 60px 0px 10px; */
+    padding: .5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* margin-top: 15px; */
+    gap: .2vw;
+    font-size: .9vw;
+
+    /* margin-bottom: 1vw; */
+    width: 100%;
+    position: sticky;
+    
+}
+
+.searchBox {
+    flex-grow: 1;
+    font-size: .8vw;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: .5vw;
+    outline: none;
+}
+
+.sortBox {
+    /* flex-grow: 0; */
+    width: 1.8vw;
+    cursor: pointer;
+}
+
+.filterBox {
+    cursor: pointer;
+    flex-grow: 0;
+}
+.sortBox>img,.filterBox>img{
+    width: 100%;
+}
+.datePicker{
+    font-size: 1vw;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 8px;
+    /* width: 150px */
+}
