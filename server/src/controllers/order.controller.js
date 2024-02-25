@@ -1,17 +1,16 @@
-import { asyncHandler } from '../utils/apiError';
-import { apiError } from '../utils/apiError';
-import { apiResponse } from '../utils/apiResponse';
-import { app } from '../firebase';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { apiError } from '../utils/apiError.js';
+import { apiResponse } from '../utils/apiResponse.js';
+import { app } from '../firebase.js';
 import { collection, query, doc, getDocs, where, updateDoc } from 'firebase/firestore';
 
-const order = asyncHandler(async (req, res) => {
+const order = asyncHandler(async (_, res) => {
     try {
-        const ref = doc(app, "orderDetails");
-        const data = await getDoc(ref);
-        if (data.exists()) {
-            res.status(200).json(new apiResponse(200, data.data(), "data send successfully"));
+        const data = await getDocs(collection(app,"orderDetails"));
+        if (data) {
+            res.status(200).json(new apiResponse(200, data, "data send successfully"));
         } else {
-            res.status(200).josn(new apiResponse(200,{},"no data found"));
+            res.status(200).json(new apiResponse(200,{},"no data found")); 
         }
     } catch (error) {
         throw new apiError(400,error);

@@ -1,27 +1,25 @@
-import {asyncHandler} from "./utils/asyncHandler";
-import {apiResponse} from "../utils/apiResponse";
-import {apiError} from "../utils/apiError";
-import {doc,getDoc, updateDoc} from "firebase/firestore";
-import {app} from "./firebase.js"
+import { apiError } from '../utils/apiError.js';
+import {asyncHandler} from '../utils/asyncHandler.js';
+import { apiResponse } from '../utils/apiResponse.js';
+import {app} from "../firebase.js"
+import {doc,collection,query,updateDoc,where} from 'firebase/firestore'
 
-const product=asyncHandler(async(_,res)=>{
+const product=asyncHandler(async(req,res)=>{
+    const {id}=req.param;
+    if(!id){ 
+        throw new apiError(404,"category id is required");
+    }
     try{
-        const instance=doc(app,"Category");
-        const data=await getDoc(instance)
-        if(data.exists()){
-            data=data.data();
-        }
-        else{
-            res.status(200).json(new apiResponse(200,{},"No data found"));
+        const q=query(collection(app,"product"),where("collectionId","==",id));
+        const data=await getDoc(q);
+        if(!data){
+            res.status(200).json(new apiResponse(200,{},"no data found"));
         }
         res.status(200).json(new apiResponse(200,data,"data send successfully"));
     }catch(error){
-        throw new apiError(400,error)
+        throw new apiError(400,error);
     }
 })
-// const productAdd=asyncHandler(async(req,res)=>{
-//     const {praductName,Quantity,}=req.body;
-// })
 
 const productStockUpdate=asyncHandler(async(req,res)=>{
     const {productId,Updated_value}=req.body;
@@ -45,8 +43,8 @@ const productStockUpdate=asyncHandler(async(req,res)=>{
         throw new apiError(400,error);
     }
 })
+
 export {
     product,
-    productAdd,
-    productStockUpdate
+    productStockUpdate,
 }

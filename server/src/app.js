@@ -7,7 +7,10 @@ app.use(cors({
     credentials:true
 }))
 
-// import routes from "./routes/admin.routes.js"
+app.use(express.json());
 
 
-export default app;
+import userRoutes from "./routes/admin.routes.js"
+app.use("/v1/admin",userRoutes)
+
+export default app; 

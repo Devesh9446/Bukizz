@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyBbEk_1lDMvmMokbp7FVlA8BD1cApJb--M",
   authDomain: "bukizz1.firebaseapp.com",
@@ -11,10 +12,11 @@ const firebaseConfig = {
   databaseURL:"https://bukizz1-default-rtdb.firebaseio.com/"
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const db = initializeApp(firebaseConfig);
+
+const app = getFirestore(db);
+// const analytics = getAnalytics(app);
 
 export{
   app,
-  analytics,
 }
