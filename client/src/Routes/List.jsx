@@ -10,6 +10,16 @@ const List = [
 
     },
     {
+        title: "Categories",
+        icon: "images/img_grid.svg",
+        path: "/categories",
+        innerElememt: [
+
+
+        ],
+
+    },
+    {
         title: "Tasks",
         icon: "images/img_clock.svg",
         path: "taskviews",
