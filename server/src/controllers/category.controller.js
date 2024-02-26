@@ -13,32 +13,37 @@ const category = asyncHandler(async (_, res) => {
     console.log(snapshot);
     res.status(200).json(new apiResponse(200, data, "data send successfully"));
   } catch (error) {
-    console.log("called");   
     throw new apiError(400, error);
   }
-});
+});   
 
 const categoryAdd = asyncHandler(async (req, res) => {
-  const Image = req.file?.Image[0];
+  const Image = req.file && req.file.Image ? req.file.Image[0] : undefined;
   const { name, description, offer } = req.body;
-  if (!(name || image)) { 
-    throw new apiError(400, "name and image is required");
+
+  if (!(name && Image)) {
+    throw new apiError(400, "name and image are required");
   }
-  const fileName = Image.slpit(".");
-  async () => {
-    for (let i = 0; i < fileName.lenght(); i++) {
-      if (fileName[i].lowercase() !== "jpeg" || "jpg") {
-        throw new apiError(400, "File should be in Jpeg format");
-      }
+
+  const fileName = Image.split(".");
+  for (let i = 0; i < fileName.length; i++) {
+    if (fileName[i].toLowerCase() !== "jpeg" && fileName[i].toLowerCase() !== "jpg") {
+      throw new apiError(400, "File should be in JPEG format");
     }
-  };
-  const image = await file(Image, jpeg);
+  }
 
-  const data = new CategoryModel(name, image, description, offer);
+  const processedImage = await file(Image, 'jpeg');
 
-  res
-    .status(200)
-    .josn(new apiResponse(200, data, "category made successfully"));
+  const data = new CategoryModel(name, processedImage, description, offer);
+  
+  const categoryCollection = collection(app, 'categories');
+
+  const docRef = await addDoc(categoryCollection, data);
+
+  res.status(200).json(new apiResponse(200, docRef.id, "Category made successfully"));
 });
 
-export { category, categoryAdd };
+export {
+   category, 
+   categoryAdd 
+};
