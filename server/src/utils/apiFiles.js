@@ -12,7 +12,7 @@ const file=async(fileName,type)=>{
     const storageRef = ref(storage, 'images/' + {fileName});
     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
-    uploadTask.on('state_changed',
+    uploadTask.on('state_changed',   
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');

@@ -25,7 +25,6 @@ class ProductModel {
         } 
         this.name = name;
         this.description = description;
-        this.price = price;
         this.categoryId = categoryId;
         this.classId = classId;
         this.board = board;
@@ -33,6 +32,10 @@ class ProductModel {
         this.set =set;
         this.retailerId = retailerId;
         this.reviewIdList = reviewIdList;
+    }
+
+    addStream(stream){
+        this.stream.push(stream)
     }
 
     addReview(id) {

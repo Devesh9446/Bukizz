@@ -6,6 +6,7 @@ class CategoryModel {
         {
             throw new apiError(404,"name and image is required")
         }
+        this.id=id;
         this.name = name;
         this.image = image;
         this.description=description; 
@@ -15,4 +16,4 @@ class CategoryModel {
 
 export{
     CategoryModel,
-}
+}   

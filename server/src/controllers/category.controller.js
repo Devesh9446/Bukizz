@@ -13,7 +13,7 @@ const category = asyncHandler(async (_, res) => {
     console.log(snapshot);
     res.status(200).json(new apiResponse(200, data, "data send successfully"));
   } catch (error) {
-    console.log("called");
+    console.log("called");   
     throw new apiError(400, error);
   }
 });
@@ -21,7 +21,7 @@ const category = asyncHandler(async (_, res) => {
 const categoryAdd = asyncHandler(async (req, res) => {
   const Image = req.file?.Image[0];
   const { name, description, offer } = req.body;
-  if (!(name || image)) {
+  if (!(name || image)) { 
     throw new apiError(400, "name and image is required");
   }
   const fileName = Image.slpit(".");

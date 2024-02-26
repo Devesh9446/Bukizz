@@ -54,11 +54,41 @@ const productAdd=asyncHandler(async(req,res)=>{
 })
 
 const productStockUpdate=asyncHandler(async(req,res)=>{
-    const {}=req.boy;
+    const {productId,newStock}=req.body;
+    if(productId){
+        throw new apiError(400,"productId is required");
+    }
+    try{
+        const docRef=doc(app,"products",productId)      
+        const updated_data=await updateDoc(docRef,{
+            
+        })
+        res.status(200).json(new apiResponse(200,updated_data,"data send succesfully"));   
+    }catch(error){
+        throw new apiError(404,error);
+    }
+    
 })
 
 const productRetailerAdd=asyncHandler(async(req,res)=>{
-    const {}=req.body;
+    const {retailerId,productId}=req.body;
+    if(!retailerId){
+        throw new apiError(400,"retilerId is required");
+    }
+    if(!productId){
+        throw new apiError(400,"productId is required");
+    }
+    
+    try{
+        const docRef=doc(app,"products",productId)      
+        const updated_data=await updateDoc(docRef,{
+            retailers: firebase.firestore.FieldValue.arrayUnion(retailerId)
+        })
+        res.status(200).json(new apiResponse(200,updated_data,"data send succesfully"));   
+    }catch(error){
+        throw new apiError(404,error);
+    }
+
 })
 
 export {
