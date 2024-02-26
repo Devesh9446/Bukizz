@@ -3,14 +3,17 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import { apiResponse } from '../utils/apiResponse.js';
 import {app} from "../firebase.js"
 import {doc,collection,query,updateDoc,where} from 'firebase/firestore'
+import { Stream } from '../models/Stream.model.js';
+import { SetData } from '../models/SetData.model.js';
+import { ProductModel } from '../models/product.model.js';
 
 const product=asyncHandler(async(req,res)=>{
     const {id}=req.param;
     if(!id){ 
         throw new apiError(404,"category id is required");
     }
-    try{
-        const q=query(collection(app,"product"),where("collectionId","==",id));
+    try{ 
+        const q=query(collection(app,"product"),where("categoryId","==",id));
         const data=await getDoc(q);
         if(!data){
             res.status(200).json(new apiResponse(200,{},"no data found"));
@@ -21,30 +24,46 @@ const product=asyncHandler(async(req,res)=>{
     }
 })
 
-const productStockUpdate=asyncHandler(async(req,res)=>{
-    const {productId,Updated_value}=req.body;
-    if(!productId){
-        throw new apiError(400,"product ID is required");
+const productAdd=asyncHandler(async(req,res)=>{
+    const {name,description,categoryId,classId,board,stream,streamName,price,image,salePrice,sku}=req.body;
+    if(!(name||description||classId||stream||board||price||image||salePrice||sku)){
+        throw new apiError(400,"All fields required");
     }
-    if(!Updated_value){
-        throw new apiError(400,"Updated Vlaue is requred");
+    if(!categoryId){
+        throw new apiError(400,"category Id is required");
     }
-    if(!Updated_value<0){
-        throw new apiError(400,"Updated value cannot be negative");
+    if(!classId){
+        throw new apiError(400,"class Id is required");
     }
-
+    let newStream=null;
+    let newSet=null;
+    if(stream){
+        if(!streamName){
+            throw new apiError(400,"streamName is required");
+        }
+        newStream=new Stream(streamName,price,image,salePrice,sku);
+    }else{
+        newSet=new SetData(name,image,sku,price,salePrice);
+    }
     try{
-        const instance=doc(app,"category",productId);
-        const updated_data=await updateDoc(instance,{
-            stock:Updated_value,
-        })
-        res.status(200).json(new apiResponse(200,updated_data,"data updated successfully"))
-    }catch(error){
+        const data=new ProductModel(name,description,price,categoryId,classId,board,newStream,retailerId,newSet,reviewIdList);
+        req.status(200).json(new apiError(200,data,"data stored successfully"));
+    }catch(error){  
         throw new apiError(400,error);
     }
 })
 
+const productStockUpdate=asyncHandler(async(req,res)=>{
+    const {}=req.boy;
+})
+
+const productRetailerAdd=asyncHandler(async(req,res)=>{
+    const {}=req.body;
+})
+
 export {
     product,
+    productAdd,
     productStockUpdate,
+    productRetailerAdd,
 }
