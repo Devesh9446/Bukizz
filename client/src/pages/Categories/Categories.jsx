@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { CircularProgressbar } from "react-circular-progressbar";
 
@@ -6,45 +6,39 @@ import { Button, Img, Input, Line, List, Text } from "components";
 
 import "react-circular-progressbar/dist/styles.css";
 import SearchBar from "components/SearchBar/SearchBar";
+import { fetchApi } from "utils/fetchApi";
+import ReviewPromptModal from "modals/ReviewPrompt";
+import { Toast } from "utils/swal";
 
 const Categories = () => {
-    const data = [
-        {
-            categoryId: "Lunch Box",
-            description: "This is the category for all the tiffin items",
-            image: "https://m.media-amazon.com/images/I/71rdQCGlsML._SL1500_.jpg",
-            name: "Lunch Box",
-            offers: "20% off",
-        },
-        {
-            categoryId: "Lunch Box",
-            description: "This is the category for all the tiffin items.dslkfk dalksfjkl d. dapfjn dasfkj adallkfkn..ds  dslalfk",
-            image: "https://m.media-amazon.com/images/I/71rdQCGlsML._SL1500_.jpg",
-            name: "Lunch Box",
-            offers: "20% off",
-        },
-        {
-            categoryId: "Lunch Box",
-            description: "This is the category for all the tiffin items",
-            image: "https://m.media-amazon.com/images/I/71rdQCGlsML._SL1500_.jpg",
-            name: "Lunch Box",
-            offers: "20% off",
-        },
-        {
-            categoryId: "Lunch Box",
-            description: "This is the category for all the tiffin items",
-            image: "https://m.media-amazon.com/images/I/71rdQCGlsML._SL1500_.jpg",
-            name: "Lunch Box",
-            offers: "20% off",
-        },
-        {
-            categoryId: "Lunch Box",
-            description: "This is the category for all the tiffin items",
-            image: "https://m.media-amazon.com/images/I/71rdQCGlsML._SL1500_.jpg",
-            name: "Lunch Box",
-            offers: "20% off",
-        },
-    ]
+    const [categoriesData, setCategoriesData] = useState([]);
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = async () => {
+
+        try {
+            const resp = await fetchApi('/v1/admin/category');
+            // console.log(resp);
+            if (resp.success) {
+                setCategoriesData(resp.data);
+                Toast.fire({
+                    icon: "success",
+                    title: "Data fetched successfully",
+                });
+            }
+
+        } catch (error) {
+            console.log("error in fetching data", error);
+            Toast.fire({
+                icon: "error",
+                title: "Mobile already linked with other account",
+            });
+        }
+    }
+
     return (
         <>
             <div className="bg-gray-50_01 flex sm:flex-col md:flex-col flex-row font-gilroy gap-[30px] items-start mx-auto w-full">
@@ -58,12 +52,24 @@ const Categories = () => {
                             >
                                 Categories
                             </Text>
+                            <div className="    ">
+                                <Button
+                                    className="cursor-pointer font-medium min-w-[161px] rounded-md text-base text-center"
+                                    color="blue_A700_01"
+                                    size="lg"
+                                    variant="fill"
+                                    onClick={() => { }}
+                                >
+                                    Add Categories
+                                </Button>
+                            </div>
+
 
                         </div>
                         <div className="flex flex-col gap-[30px] items-start justify-start w-[98%] md:w-full">
                             <SearchBar />
-                            <div className="flex flex-col gap-6 items-center justify-start my-0 w-full">
-                                {data.map((item, index) => (
+                            {/* <div className="flex flex-col gap-6 items-center justify-start my-0 w-full">
+                                {categoriesData.map((item, index) => (
                                     <div key={index}>
                                         <div className="flex md:flex-col flex-row md:gap-5 items-center justify-start w-[96%] md:w-full">
                                             <div className="flex flex-row gap-2 items-center justify-start rounded-[3px] w-1/5 md:w-full">
@@ -103,9 +109,9 @@ const Categories = () => {
                                         <Line className=" bg-blue_gray-100 h-px w-full" />
                                     </div>
                                 ))}
-                            </div>
+                            </div> */}
                             <div className="flex gap-20 items-center justify-start flex-wrap my-0 w-full">
-                                {data.map((item, index) => (
+                                {categoriesData.map((item, index) => (
 
                                     <div key={index} className="bg-white-A700 flex  gap-2 items-center justify-start p-4 rounded-[10px] shadow-bs2 w-80">
                                         <div className="w-1/5 ">
