@@ -3,34 +3,30 @@ import axios from "axios";
 const server = process.env.SERVER_URL;
 
 export const fetchApi = async (endpoint, data, method = 'POST', options = {}) => {
-    // console.log(server);
     return new Promise((res, rej) => {
         var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        var formData = new FormData();
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
         var requestOptions = {
             method: method,
             headers: myHeaders,
-            body: JSON.stringify(data),
+            body: formData,
             redirect: 'follow',
-            // credentials: 'include',
             ...options,
         };
         fetch(server + endpoint, requestOptions)
             .then(response => response.json())
             .then(result => {
-                // console.log(result);
-                // if (result.statusCode == 401) {
-                //     console.log("unauthorised user", result);
-                //     window.location.href = "/login"
-                // }
                 res(result);
             })
             .catch(error => {
-
                 rej(error);
             });
     });
 };
+
 
 export const axiosApi = async (endpoint, data = {}, options = {}) => {
     return new Promise((res, rej) => {

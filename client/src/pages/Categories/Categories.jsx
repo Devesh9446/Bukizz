@@ -9,8 +9,11 @@ import SearchBar from "components/SearchBar/SearchBar";
 import { fetchApi } from "utils/fetchApi";
 import ReviewPromptModal from "modals/ReviewPrompt";
 import { Toast } from "utils/swal";
+import Model from "components/Model/Model";
+import AddCategories from "./AddCategories";
 
 const Categories = () => {
+    const [showAddCategoriesForm, setShowAddCategoryForm] = useState(false);
     const [categoriesData, setCategoriesData] = useState([]);
 
     useEffect(() => {
@@ -21,7 +24,7 @@ const Categories = () => {
 
         try {
             const resp = await fetchApi('/v1/admin/category');
-            // console.log(resp);
+            console.log(resp);
             if (resp.success) {
                 setCategoriesData(resp.data);
                 Toast.fire({
@@ -37,6 +40,16 @@ const Categories = () => {
                 title: "Mobile already linked with other account",
             });
         }
+    }
+
+    if (showAddCategoriesForm) {
+        return <Model
+            setShowModel={setShowAddCategoryForm}
+            title="Add Categories"
+            children={
+                <AddCategories setShowModel ={setShowAddCategoryForm}/>
+            }
+        />
     }
 
     return (
@@ -58,7 +71,7 @@ const Categories = () => {
                                     color="blue_A700_01"
                                     size="lg"
                                     variant="fill"
-                                    onClick={() => { }}
+                                    onClick={() => { setShowAddCategoryForm(true) }}
                                 >
                                     Add Categories
                                 </Button>
