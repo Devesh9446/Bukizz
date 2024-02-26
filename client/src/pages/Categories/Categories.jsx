@@ -18,7 +18,7 @@ const Categories = () => {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [showAddCategoriesForm]);
 
     const getData = async () => {
 

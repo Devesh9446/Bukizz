@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { fetchApi } from 'utils/fetchApi';
 import { Toast } from 'utils/swal';
 
-function AddCategories({ setShowModel =()=>{}}) {
+function AddCategories({ setShowModel = () => { } }) {
+    const [isActive, setIsActive] = useState(false);
     const [formData, setFormData] = useState({
         description: "",
-        offer: "",
+        offers: "",
         name: "",
         Image: null
     });
@@ -29,7 +30,7 @@ function AddCategories({ setShowModel =()=>{}}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setIsActive(true);
         if (validateForm()) {
             // If the form is valid, perform your desired actions with the form data and catImage
             // For now, just display an alert
@@ -45,12 +46,13 @@ function AddCategories({ setShowModel =()=>{}}) {
                 setShowModel(false);
             }
         }
+        setIsActive(false);
     };
 
     const validateForm = () => {
-        const { name, description, offer, Image } = formData;
+        const { name, description, offers, Image } = formData;
 
-        if (!name.trim() || !description.trim() || !offer.trim()) {
+        if (!name.trim() || !description.trim() || !offers.trim()) {
             Toast.fire({
                 icon: "error",
                 title: "Please fill in all the fields",
@@ -89,9 +91,9 @@ function AddCategories({ setShowModel =()=>{}}) {
                     wrapClassName="border border-blue_gray-300 border-solid rounded flex md:flex-1 md:ml-[0] md:mt-0 my-1.5 w-full"
                 />
                 <Input
-                    name="offer"
-                    placeholder="Category offer"
-                    value={formData.offer}
+                    name="offers"
+                    placeholder="Category offers"
+                    value={formData.offers}
                     onChange={handleChange}
                     className="!placeholder:text-blue_gray-200 font-medium px-2 text-base text-left w-full"
                     wrapClassName="border border-blue_gray-300 border-solid rounded flex md:flex-1 md:ml-[0] md:mt-0 my-1.5 w-full"
@@ -105,10 +107,14 @@ function AddCategories({ setShowModel =()=>{}}) {
                     wrapClassName="border border-blue_gray-300 border-solid rounded flex md:flex-1 md:ml-[0] md:mt-0 my-1.5 w-full"
                 />
                 <Button
-                    type="submit" className="bg-blue_gray-500 text-white rounded py-2 px-4"
-                    color="blue_A700_01"
+                    type="submit" className={`bg-blue_gray-500 text-white rounded py-2 px-4 ${!isActive ? "cursor-pointer" : "cursor-not-allowed"}`}
+                    color={isActive ? "blue_gray_100" : "blue_A700_01"}
+                    // cursor={isActive ? "not-allowed" : "pointer"}
+
                     size="lg"
                     variant="fill"
+
+                    disabled={isActive}
                 >
                     Add Categories
                 </Button>
