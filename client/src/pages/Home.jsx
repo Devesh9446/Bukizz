@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import MainPage from "./MainPage/MainPage";
+import SearchBar from "components/SearchBar/SearchBar";
 const Home = () => {
+
+  
   return (
     <div className="container">
+      <SearchBar  />
       {/* <MainPage/> */}
       <div className="dhiwise-navigation">
         <h1>Homepage</h1>
@@ -60,7 +64,7 @@ const Home = () => {
         <p>dssal;kjf;lljaddsalkfj;lajsl;fkjal;kdlkanf;lkansd;lkfl;aksndlf;kn;lkdasn;lfkn;lakdn</p><br />
         <p>dssal;kjf;lljaddsalkfj;lajsl;fkjal;kdlkanf;lkansd;lkfl;aksndlf;kn;lkdasn;lfkn;lakdn</p><br />
         <p>dssal;kjf;lljaddsalkfj;lajsl;fkjal;kdlkanf;lkansd;lkfl;aksndlf;kn;lkdasn;lfkn;lakdn</p><br />
-      
+
       </div>
     </div>
   );

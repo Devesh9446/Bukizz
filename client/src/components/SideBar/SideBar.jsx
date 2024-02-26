@@ -21,7 +21,7 @@ function SideBar() {
                     {List.map((elem, index) => (
                         (active !== index) ?
 
-                            <div key={index} onClick={() => { handleClick(index, elem.path) }} className="flex flex-col items-start justify-start p-2 w-full">
+                            <div key={index} onClick={() => { handleClick(index, elem.path) }} className="flex flex-col items-start justify-start p-2 w-full cursor-pointer">
                                 <div className="flex flex-row gap-2 items-start justify-start my-[9px]  md:w-full">
                                     <Img
                                         className="h-6 w-6"
@@ -53,115 +53,8 @@ function SideBar() {
                                     </Text>
                                 </div>
                             </div>
-
-
                     ))}
-                    {/* <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-start justify-start my-[9px] w-[49%] md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_save.svg"
-                                alt="save"
-                            />
-                            <Text
-                                className="mt-[3px] text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Dashboard
-                            </Text>
-                        </div>
-                    </div> */}
-                    {/* <div className="flex flex-row gap-1.5 items-center justify-start pr-[17px] py-[17px] w-full">
-                        <Line className="bg-blue-A700_01 h-6 w-0.5" />
-                        <div className="flex flex-row gap-2 items-start justify-start w-[31%]">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_clock.svg"
-                                alt="clock"
-                            />
-                            <Text
-                                className="mt-[3px] text-base text-blue-A700_01"
-                                size="txtGilroySemiBold16BlueA70001"
-                            >
-                                Tasks
-                            </Text>
-                        </div>
-                    </div> */}
-                    {/* <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-start justify-start my-2 w-[38%] md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_chartlineoutl.svg"
-                                alt="chartlineOutl"
-                            />
-                            <Text
-                                className="mt-1 text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Activity
-                            </Text>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-end justify-start my-2 w-[81%] md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_checkmark.svg"
-                                alt="checkmark"
-                            />
-                            <Text
-                                className="mt-[5px] text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Project management
-                            </Text>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-start justify-start my-2 w-[39%] md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_file.svg"
-                                alt="file"
-                            />
-                            <Text
-                                className="mt-[5px] text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Reports
-                            </Text>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-start justify-start my-[9px] w-[54%] md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_notification.svg"
-                                alt="notification One"
-                            />
-                            <Text
-                                className="mt-[3px] text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Notifications
-                            </Text>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <div className="flex flex-row gap-2 items-start justify-start my-2 w-2/5 md:w-full">
-                            <Img
-                                className="h-6 w-6"
-                                src="images/img_settings.svg"
-                                alt="settings"
-                            />
-                            <Text
-                                className="mt-[5px] text-base text-blue_gray-700"
-                                size="txtGilroySemiBold16"
-                            >
-                                Settings
-                            </Text>
-                        </div>
-                    </div> */}
+                
                 </div>
                 <div className="flex flex-col font-opensans items-start justify-start p-2 w-[87%] md:w-full">
                     <div className="flex flex-row gap-2 items-end justify-start my-2 w-[29%] md:w-full">

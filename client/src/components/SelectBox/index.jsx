@@ -73,8 +73,8 @@ const SelectBox = React.forwardRef(
             option: (provided, state) => ({
               ...provided,
               color: state.isSelected && "#fafafa",
-              backgroundColor: state.isSelected && "#fffcf3",
-              "&:hover": { backgroundColor: "#fffcf3", color: "#feb909" },
+              backgroundColor: state.isSelected && "#808080",
+              "&:hover": { backgroundColor: "#808080", color: "#feb909" },
             }),
             singleValue: (provided) => ({
               ...provided,
@@ -145,6 +145,6 @@ SelectBox.defaultProps = {
   value: "",
   size: "xs",
   options: [],
-  onChange: () => {},
+  onChange: () => { },
 };
 export { SelectBox };

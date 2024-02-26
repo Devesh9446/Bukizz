@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "pages/Home";
 import NotFound from "pages/NotFound";
+import Dashboard from "pages/Dashboard/Dashboard";
 const TaskViews = React.lazy(() => import("pages/TaskViews"));
 const RFID = React.lazy(() => import("pages/RFID"));
 const LoyaltySystem = React.lazy(() => import("pages/LoyaltySystem"));
@@ -27,6 +28,8 @@ const ProjectRoutes = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
+
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/baslinereporting" element={<BaslineReporting />} />
           <Route
             path="/customisedorderstatus"

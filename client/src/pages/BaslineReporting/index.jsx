@@ -11,7 +11,7 @@ const BaslineReportingPage = () => {
   return (
     <>
       <div className="bg-gray-50_01 flex sm:flex-col md:flex-col flex-row font-gilroy gap-[30px] items-start mx-auto w-full">
-        <Sidebar className="!sticky !w-[300px] flex h-screen md:hidden justify-start overflow-auto md:px-5 top-[0]">
+        {/* <Sidebar className="!sticky !w-[300px] flex h-screen md:hidden justify-start overflow-auto md:px-5 top-[0]">
           <div className="bg-gray-50 flex flex-col gap-[35px] items-center justify-start p-6 sm:px-5 w-full">
             <Img
               className="h-[35px] mt-[3px] w-[65%]"
@@ -144,7 +144,7 @@ const BaslineReportingPage = () => {
               </div>
             </div>
           </div>
-        </Sidebar>
+        </Sidebar> */}
         <div className="flex-1 sm:h-[1056px] h-[1109px] md:h-[2276px] md:mt-0 mt-6 md:px-5 relative w-full">
           <div className="absolute flex flex-col gap-6 inset-x-[0] items-center justify-start mx-auto top-[1%] w-full">
             <div className="flex flex-row md:gap-10 items-end justify-between w-full">
@@ -793,7 +793,7 @@ const BaslineReportingPage = () => {
               </div>
             </div>
           </div>
-          <div className="absolute bg-gray-50 md:h-[1056px] h-[1109px] inset-y-[0] my-auto pb-[53px] right-[2%] shadow-bs w-[23%]">
+          {/* <div className="absolute bg-gray-50 md:h-[1056px] h-[1109px] inset-y-[0] my-auto pb-[53px] right-[2%] shadow-bs w-[23%]">
             <div className="bg-gray-50 h-[1056px] mx-auto shadow-bs w-full"></div>
             <div className="absolute flex flex-row inset-x-[0] items-start justify-between mx-auto top-[0] w-full">
               <Img
@@ -866,7 +866,7 @@ const BaslineReportingPage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

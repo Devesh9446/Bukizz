@@ -2,7 +2,7 @@ const List = [
     {
         title: "Dashboard",
         icon: "images/img_save.svg",
-        path: "/baslinereporting",
+        path: "/dashboard",
         innerElememt: [
 
 
