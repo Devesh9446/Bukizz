@@ -18,16 +18,21 @@ const order = asyncHandler(async (_, res) => {
 });
 
 const fetchDataByStatus = asyncHandler(async (req, res) => {
-    const {status}=req.param;
+    const { status } = req.params; 
     try {
         const q = query(collection(app, "orderDetails"), where("status", "==", status));
         const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => doc.data());
-        res.status(200).json(new apiResponse(200, data, "data sent successfully"));
+        if (snapshot.empty) { 
+            res.status(200).json(new apiResponse(200, {}, "No data found for this status"));
+        } else {
+            const data = snapshot.docs.map(doc => doc.data());
+            res.status(200).json(new apiResponse(200, data, "Data sent successfully"));
+        }
     } catch (error) {
-        new apiError(400,error);
+        throw new apiError(400, error);
     }
 });
+
 
 const updateOrder=asyncHandler(async(req,res)=>{
     const {orderId}=req.param;

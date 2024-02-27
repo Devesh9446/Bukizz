@@ -18,7 +18,6 @@ const category = asyncHandler(async (_, res) => {
 });   
 
 const categoryAdd = asyncHandler(async (req, res) => {
-  console.log("Images is ", req.file);
   const Image = req.file;
   const { name, description, offers } = req.body;
   if (!(name || image)) {
@@ -33,14 +32,11 @@ const categoryAdd = asyncHandler(async (req, res) => {
     }
   };
   const image = await file(Image, 'jpeg');
-  // console.log("image ", image);
+  console.log(image);
   const data = new CategoryModel(name, image, description, offers);
-  const jsonData = JSON.stringify(data); // Convert the object to a JSON string
+  const jsonData = JSON.stringify(data);
   const jsonObject = JSON.parse(jsonData);
-  const db = getFirestore();
-  const resp = await addDoc(collection(db, "category"), jsonObject);
-
-  console.log(resp.id);
+  const resp = await addDoc(collection(app, "category"), jsonObject);
   res
     .status(200)
     .json(new apiResponse(200, data, "category made successfully"));

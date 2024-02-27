@@ -10,8 +10,6 @@ const file = async (filecontent, type) => {
   };
   const fileBuffer = await fs.readFile(filecontent.path);
 
-  // console.log(fileBuffer);
-
   const storageRef = ref(storage, 'images/' + filecontent.originalname);
   const uploadTask = uploadBytesResumable(storageRef, fileBuffer, metadata);
   return new Promise((resolve, reject) => {
@@ -28,7 +26,6 @@ const file = async (filecontent, type) => {
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          // console.log(filecontent.originalname + " uploaded to " + downloadURL);
           await fs.unlink(filecontent.path);
           resolve(downloadURL);
         } catch (error) {

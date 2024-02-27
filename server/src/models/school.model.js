@@ -10,16 +10,12 @@ class School{
         this.email=email;
         this.website=website;
         this.logo=logo;
-        this.banner=banner;
+        this.banner=banner; 
         this.aboutUs=aboutUs;
         this.mission=mission;
         this.image=image;
         this.ourInspiration=ourInspiration;
-        this.productId=productId;
-    }
-
-    addProduct(id){
-        this.productId.push(id);
+        this.productId=[];
     }
 }
 

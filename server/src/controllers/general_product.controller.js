@@ -16,4 +16,4 @@ const general_products=asyncHandler(async(req,res)=>{
       }
 })
 
-export {general_products};
+export {general_products}; 
