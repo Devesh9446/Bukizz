@@ -12,7 +12,7 @@ class CategoryModel {
         this.offers=offers;
     }
 }  
-
+ 
 export{
     CategoryModel,
 }

@@ -13,10 +13,9 @@ const category = asyncHandler(async (_, res) => {
     console.log(snapshot);
     res.status(200).json(new apiResponse(200, data, "data send successfully"));
   } catch (error) {
-    console.log("called");
     throw new apiError(400, error);
   }
-});
+});   
 
 const categoryAdd = asyncHandler(async (req, res) => {
   console.log("Images is ", req.file);
@@ -47,4 +46,7 @@ const categoryAdd = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, data, "category made successfully"));
 });
 
-export { category, categoryAdd };
+export {
+   category, 
+   categoryAdd 
+};

@@ -1,4 +1,4 @@
-import { apiError } from "../utils/apiError";
+import { apiError } from "../utils/apiError.js";
 
 class productModel{
     constructor(name,description,price,stockQuantity,categoryId,image,classId,board,salePrice,retailerId,stream,set,reviewIdList){

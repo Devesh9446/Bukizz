@@ -10,7 +10,7 @@ const product=asyncHandler(async(req,res)=>{
         throw new apiError(404,"category id is required");
     }
     try{
-        const q=query(collection(app,"product"),where("collectionId","==",id));
+        const q=query(collection(app,"products"),where("categoryId","==",id));
         const data=await getDoc(q);
         if(!data){
             res.status(200).json(new apiResponse(200,{},"no data found"));
