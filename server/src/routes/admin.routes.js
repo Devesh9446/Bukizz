@@ -15,14 +15,8 @@ router.route("/category").get(category);
 router.route("/generalPoducts").get(general_products)
 router.route("/products/c/:categoryId").get(product);
 router.route("/school").post(schoolAdd);
-router.route("/category").post(
-    upload.fields([
-        {
-            name:"Image", 
-            maxCount:1
-        }
-    ])
-,categoryAdd);
- 
+router.route("/category").post(category);
+router.route("/addcategory").post(upload.single("Image"),categoryAdd);
+
 export default router;
    

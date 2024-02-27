@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { apiError } from "../utils/apiError.js";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, getFirestore, addDoc } from "firebase/firestore";
 import { app } from "../firebase.js";
 import { CategoryModel } from "../models/category.model.js";
 import { file } from "../utils/apiFiles.js";
@@ -18,29 +18,32 @@ const category = asyncHandler(async (_, res) => {
 });   
 
 const categoryAdd = asyncHandler(async (req, res) => {
-  const Image = req.file && req.file.Image ? req.file.Image[0] : undefined;
-  const { name, description, offer } = req.body;
-
-  if (!(name && Image)) {
-    throw new apiError(400, "name and image are required");
+  console.log("Images is ", req.file);
+  const Image = req.file;
+  const { name, description, offers } = req.body;
+  if (!(name || image)) {
+    throw new apiError(400, "name and image is required");
   }
-
-  const fileName = Image.split(".");
-  for (let i = 0; i < fileName.length; i++) {
-    if (fileName[i].toLowerCase() !== "jpeg" && fileName[i].toLowerCase() !== "jpg") {
-      throw new apiError(400, "File should be in JPEG format");
+  const fileName = Image.originalname.split(".");
+  async () => {
+    for (let i = 0; i < fileName.lenght(); i++) {
+      if (fileName[i].lowercase() !== "jpeg" || "jpg") {
+        throw new apiError(400, "File should be in Jpeg format");
+      }
     }
-  }
+  };
+  const image = await file(Image, 'jpeg');
+  // console.log("image ", image);
+  const data = new CategoryModel(name, image, description, offers);
+  const jsonData = JSON.stringify(data); // Convert the object to a JSON string
+  const jsonObject = JSON.parse(jsonData);
+  const db = getFirestore();
+  const resp = await addDoc(collection(db, "category"), jsonObject);
 
-  const processedImage = await file(Image, 'jpeg');
-
-  const data = new CategoryModel(name, processedImage, description, offer);
-  
-  const categoryCollection = collection(app, 'categories');
-
-  const docRef = await addDoc(categoryCollection, data);
-
-  res.status(200).json(new apiResponse(200, docRef.id, "Category made successfully"));
+  console.log(resp.id);
+  res
+    .status(200)
+    .json(new apiResponse(200, data, "category made successfully"));
 });
 
 export {
