@@ -1,7 +1,5 @@
 import { File } from "buffer";
-import { File } from "buffer";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import fs from 'fs/promises';
 import fs from 'fs/promises';
 
 const file = async (filecontent, type) => {
