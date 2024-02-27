@@ -1,49 +1,39 @@
+import { File } from "buffer";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import fs from 'fs'
+import fs from 'fs/promises';
 
-const file=async(fileName,type)=>{
+const file = async (filecontent, type) => {
+  const storage = getStorage();
 
-    const storage = getStorage();
-    
-    const metadata = {
-      contentType: `image/${type}`
-    };
-    
-    const storageRef = ref(storage, 'images/' + {fileName});
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-    uploadTask.on('state_changed',   
+  const metadata = {
+    contentType: `image/${type}`
+  };
+  const fileBuffer = await fs.readFile(filecontent.path);
+
+  const storageRef = ref(storage, 'images/' + filecontent.originalname);
+  const uploadTask = uploadBytesResumable(storageRef, fileBuffer, metadata);
+  return new Promise((resolve, reject) => {
+    uploadTask.on('state_changed',
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
-        }
-      }, 
-      (error) => {
-        switch (error.code) {
-          case 'storage/unauthorized':
-            break;
-          case 'storage/canceled':
-            break;
-    
-          case 'storage/unknown':
-            break;
-        }
       },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          fs.unlink(`../../public/temp/{filename}`);
-          return (downloadURL);
-        });
+      (error) => {
+        console.log("error uploading file", error);
+        reject(error);
+      },
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          await fs.unlink(filecontent.path);
+          resolve(downloadURL);
+        } catch (error) {
+          console.error("Error getting download URL or deleting file", error);
+          reject(error);
+        }
       }
     );
+  });
 }
 
-
-export {file};
+export { file };
