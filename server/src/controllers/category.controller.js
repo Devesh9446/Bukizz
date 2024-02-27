@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { apiError } from "../utils/apiError.js";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, getFirestore, addDoc } from "firebase/firestore";
 import { app } from "../firebase.js";
 import { CategoryModel } from "../models/category.model.js";
 import { file } from "../utils/apiFiles.js";
@@ -19,12 +19,13 @@ const category = asyncHandler(async (_, res) => {
 });
 
 const categoryAdd = asyncHandler(async (req, res) => {
-  const Image = req.file?.Image[0];
-  const { name, description, offer } = req.body;
+  console.log("Images is ", req.file);
+  const Image = req.file;
+  const { name, description, offers } = req.body;
   if (!(name || image)) {
     throw new apiError(400, "name and image is required");
   }
-  const fileName = Image.slpit(".");
+  const fileName = Image.originalname.split(".");
   async () => {
     for (let i = 0; i < fileName.lenght(); i++) {
       if (fileName[i].lowercase() !== "jpeg" || "jpg") {
@@ -32,13 +33,18 @@ const categoryAdd = asyncHandler(async (req, res) => {
       }
     }
   };
-  const image = await file(Image, jpeg);
+  const image = await file(Image, 'jpeg');
+  // console.log("image ", image);
+  const data = new CategoryModel(name, image, description, offers);
+  const jsonData = JSON.stringify(data); // Convert the object to a JSON string
+  const jsonObject = JSON.parse(jsonData);
+  const db = getFirestore();
+  const resp = await addDoc(collection(db, "category"), jsonObject);
 
-  const data = new CategoryModel(name, image, description, offer);
-
+  console.log(resp.id);
   res
     .status(200)
-    .josn(new apiResponse(200, data, "category made successfully"));
+    .json(new apiResponse(200, data, "category made successfully"));
 });
 
 export { category, categoryAdd };

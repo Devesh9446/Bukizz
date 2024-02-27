@@ -9,8 +9,8 @@ const router=Router();
 router.route("/orders").get(order);
 router.route("/orders/c/:/status").get(fetchDataByStatus);
 router.route("/school").post(schoolAdd);
-router.route("/category").get(category);
-router.route("/category").post(upload.single("Image"),categoryAdd);
+router.route("/category").post(category);
+router.route("/addcategory").post(upload.single("Image"),categoryAdd);
 
 export default router;
   
