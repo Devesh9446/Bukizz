@@ -7,23 +7,27 @@ import AddCategories from 'pages/Categories/AddCategories';
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from 'utils/fetchApi';
 import { Toast } from 'utils/swal';
+import UpdateSchools from './UpdateSchools';
 
 function Schools() {
     const [showAddSchoolsForm, setShowAddSchoolForm] = useState(false);
+    const [schoolData,setSchoolData] =useState({});
     const [schoolsData, setSchoolsData] = useState([]);
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const handleSort = () => { }
 
     useEffect(() => {
-        getData();
+        if(!showAddSchoolsForm){
+            getData();
+        }
     }, [showAddSchoolsForm])
 
     const getData = async () => {
 
         try {
             const resp = await fetchApi('/v1/admin/school');
-            console.log(resp);
+            // console.log(resp);
             if (resp.success) {
                 setSchoolsData(resp.data);
                 // Toast.fire({
@@ -43,13 +47,7 @@ function Schools() {
     }
 
     if (showAddSchoolsForm) {
-        return <Model
-            setShowModel={setShowAddSchoolForm}
-            title="Add Categories"
-            children={
-                <AddCategories setShowModel={setShowAddSchoolForm} />
-            }
-        />
+        return <UpdateSchools data={schoolData} showModel={setShowAddSchoolForm} />
     }
     return (
         <div className="bg-gray-50_01 flex sm:flex-col md:flex-col flex-row font-gilroy gap-[30px] items-start mx-auto w-full">
@@ -97,6 +95,8 @@ function Schools() {
                         >
                             <Row
                                 data={schoolsData}
+                                setSingleSchool={setSchoolData}
+                                setShowAddSchoolForm={setShowAddSchoolForm}
                             //   page={page}
                             //   limit={limit}
                             //   fetchData={fetchData}
@@ -113,13 +113,18 @@ function Schools() {
 export default Schools;
 
 
-const Row = ({ data = [], page = 1, limit = 1, }) => {
+const Row = ({ data = [], setSingleSchool = () => { }, setShowAddSchoolForm=()=>{}, page = 1, limit = 1, }) => {
 
-
+    const handleClick=(el)=>{
+        setSingleSchool(el);
+        setShowAddSchoolForm(true);
+    }
     return (
         <>
             {data.map((el, index) => (
-                <tr key={el.schoolId}>
+                <tr key={el.schoolId} onClick={()=>{
+                    handleClick(el);
+                }}>
                     <td>{(page - 1) * limit + index + 1}</td>
                     <td> <Img
                         className="h-[60px] md:h-auto object-cover rounded-[3px] w-[60px]"
