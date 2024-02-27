@@ -13,7 +13,7 @@ class productModel{
         }
         if(!stockQuantity){
             throw new apiError(400,"stock quantity is required");
-        } 
+        }  
         if(!categoryId){
             throw new apiError(400,"categoryId is required");
         }

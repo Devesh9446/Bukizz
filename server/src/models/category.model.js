@@ -9,7 +9,7 @@ class CategoryModel {
         this.categoryId=name;
         this.name = name;
         this.image = image;
-        this.description=description; 
+        this.description=description;  
         this.offers=offers;
     }
     addId(id){

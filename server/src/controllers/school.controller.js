@@ -25,7 +25,6 @@ const schoolAdd = asyncHandler(async (req, res) => {
     city,
     contactNumber,
     email,
-    logo,
     mission,
     name,
     ourInspiration,
@@ -33,7 +32,6 @@ const schoolAdd = asyncHandler(async (req, res) => {
     state,
     website,
   } = req.body;
-  console.log(req.body);
   if (!aboutUs) {
     throw new apiError(400, "about us is required");
   }
@@ -52,9 +50,6 @@ const schoolAdd = asyncHandler(async (req, res) => {
   if (!email) {
     throw new apiError(400, "email is required");
   }
-  if (!logo) {
-    throw new apiError(400, "logo is required");
-  }
   if (!mission) {
     throw new apiError(400, "mission is required");
   }
@@ -67,21 +62,17 @@ const schoolAdd = asyncHandler(async (req, res) => {
   if (!pincode) {
     throw new apiError(400, "pincode is required");
   }
-  if (!productsId) {
-    throw new apiError(400, "productId is required");
-  }
   if (!state) {
     throw new apiError(400, "state is required");
   }
   if (!website) {
     throw new apiError(400, "website is required");
   }
-  if (productsId) {
-    addProduct(productsId);
-  }
-  const {Image,Banner} = req.file;
-  const fileName1= Image.originalname.split(".");
-  const fileName2= Banner.originalname.split(".");
+  // console.log(req.files);
+  const {Image,Banner,Logo} = req.files;
+  const fileName1= Image[0].originalname.split(".");
+  const fileName2= Banner[0].originalname.split(".");
+  const fileName3= Logo[0].originalname.split(".");
   async () => {
     for (let i = 0; i < fileName1.lenght(); i++) {
       if (fileName1[i].lowercase() !== "jpeg" || "jpg") {
@@ -93,9 +84,15 @@ const schoolAdd = asyncHandler(async (req, res) => {
         throw new apiError(400, "banner should be in Jpeg format");
       }
     }
+    for (let i = 0; i < fileName3.lenght(); i++) {
+      if (fileName3[i].lowercase() !== "jpeg" || "jpg") {
+        throw new apiError(400, "banner should be in Jpeg format");
+      }
+    }
   };
-  const image = await file(Image, "jpeg");
-  const banner = await file(Banner, "jpeg");
+  const image = await file(Image[0], "jpeg");
+  const banner = await file(Banner[0], "jpeg");
+  const logo = await file(Logo[0], "jpeg");
   try {
     const data = new School(
       name,

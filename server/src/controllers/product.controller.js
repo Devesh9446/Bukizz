@@ -15,7 +15,7 @@ const product=asyncHandler(async(req,res)=>{
       }
 })
 
-const productByCategory=asyncHandler(async(req,res)=>{
+const productByCategoryId=asyncHandler(async(req,res)=>{
     const {id}=req.param;
     if(!id){ 
         throw new apiError(404,"category id is required");
@@ -52,7 +52,7 @@ const productByproductId=asyncHandler(async(req,res)=>{
 const productStockUpdate=asyncHandler(async(req,res)=>{
     const {productId,Updated_value}=req.body;
     if(!productId){
-        throw new apiError(400,"product ID is required");
+        throw new apiError(400,"product ID is required"); 
     }
     if(!Updated_value){
         throw new apiError(400,"Updated Vlaue is requred");
@@ -74,7 +74,7 @@ const productStockUpdate=asyncHandler(async(req,res)=>{
 
 export {
     product,
-    productByCategory,
+    productByCategoryId,
     productByproductId,
     productStockUpdate,
 
