@@ -29,5 +29,16 @@ router.route("/category").post(
     ])
 ,categoryAdd);
  
+
+router.route("/orders").post(order);
+router.route("/school").post(school);
+router.route("/orders/c/:/status").post(fetchDataByStatus); 
+router.route("/category").post(category);
+router.route("/generalPoducts").post(general_products)
+router.route("/products/c/:categoryId").post(product);
+router.route("/school").post(schoolAdd);
+router.route("/category").post(category);
+router.route("/addcategory").post(upload.single("Image"),categoryAdd);
+
 export default router;
      
