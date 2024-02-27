@@ -1,0 +1,36 @@
+.mainConatiner {
+    /* padding: 0 60px 0px 10px;
+    margin-top: 15px; */
+    font-size: 1vw;
+    /* max-height: 30vh; */
+    overflow: auto;
+    padding: 1vw;
+    margin-bottom: 1vw;
+    width: 100%;
+}
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tableHeader {
+    border-bottom: 1px solid #BFBFBF;
+    color: rgba(0, 0, 0, 0.7);
+    text-align: left;
+}
+
+.tableBody {
+    width: 100%;
+    text-align: left;
+}
+
+/* .tableHeader th {
+    padding-bottom: 18px;
+} */
+
+.tableBody td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #bfbfbf91;
+}

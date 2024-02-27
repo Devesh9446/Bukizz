@@ -20,6 +20,12 @@ const List = [
 
     },
     {
+        title: "Schools",
+        icon: "images/img_user.svg",
+        path: "/schools",
+        innerElememt: [],
+    },
+    {
         title: "Tasks",
         icon: "images/img_clock.svg",
         path: "taskviews",
