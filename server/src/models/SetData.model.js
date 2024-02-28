@@ -1,10 +1,13 @@
 class SetData{
-    constructor(name,image,sku,price,salePrice){
+    constructor(name){
         this.name=name;
-        this.image=image;
-        this.sku=sku;
-        this.price=price;
-        this.saalePrice=salePrice;
+        this.image=[];
+        this.sku=0;
+        this.price=0;
+        this.salePrice=0;
+    }
+    addImage(image){
+        this.image.push(image);
     }
 }
-export {SetData};
+export {SetData}; 

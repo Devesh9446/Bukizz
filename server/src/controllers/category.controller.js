@@ -18,7 +18,7 @@ const category = asyncHandler(async (_, res) => {
 });   
 
 const categoryAdd = asyncHandler(async (req, res) => {
-  const Image = req.file;
+  const Image = req.file;  
   const { name, description, offers } = req.body;
   if (!(name || image)) {
     throw new apiError(400, "name and image is required");
