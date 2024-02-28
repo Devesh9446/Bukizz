@@ -1,9 +1,12 @@
 import { apiError } from "../utils/apiError.js";
 
 class productModel{
-    constructor(name,description,price,stockQuantity,categoryId,image,classId,board,salePrice,retailerId,stream,set,reviewIdList){
+    constructor(productId,name,description,price,stockQuantity,categoryId,image,classId,board,retailerId=""){
         if(!name){
             throw new apiError(400,"Product name is required");
+        }
+        if(!productId){
+            throw new apiError(400,"Product Id is required");
         }
         if(!description){
             throw new apiError(400,"description is required");
@@ -17,24 +20,42 @@ class productModel{
         if(!categoryId){
             throw new apiError(400,"categoryId is required");
         }
-        if(!retailerId){
-            throw new apiError(400,"Retailer ID is required");
-        }
         if(!image){
             throw new apiError(400,"image is required");
         }
+        this.productId=productId;
         this.name=name;
         this.description=description;
-        this.price=price;
-        this.stockQuantity=stockQuantity;
         this.categoryId=categoryId;
-        this.image=image;
         this.classId=classId;
         this.board=board;
-        this.salePrice=salePrice;
-        this.stream=stream;
-        this.set=set;
-        this.reviewIdList=reviewIdList;
+        this.retailerId=retailerId;
+        this.stream=[];
+        this.set=[];
+        this.reviewList=[];
+        this.variation=new Map();
+    }
+    addSteam(stream){
+        this.stream.push(stream);
+    }
+    addSet(set){
+        this.set.push(set);
+    }
+    addReviewList(reviewId){
+        this.reviewList.push(reviewId);
+    }
+    addVariation(setLength,variation){
+        console.log("added");
+        if (!this.variation.has(setLength)) {
+            this.variation.set(setLength, []);
+        }
+        this.variation.get(setLength).push(variation);
+    }
+    streamLength(){
+        return this.stream.length;
+    }
+    setLength(){
+        return this.set.length;
     }
 }
 export {

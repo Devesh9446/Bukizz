@@ -19,11 +19,11 @@ const school = asyncHandler(async (_, res) => {
 
 const schoolAdd = asyncHandler(async (req, res) => {
   const {
-    aboutUs,
+    aboutUs, 
     address,
     board,
     city,
-    contactNumber,
+    contactNumber, 
     email,
     mission,
     name,
@@ -31,8 +31,12 @@ const schoolAdd = asyncHandler(async (req, res) => {
     pincode,
     state,
     website,
+    schoolId,
   } = req.body;
   if (!aboutUs) {
+    throw new apiError(400, "about us is required");
+  }
+  if (!schoolId) {
     throw new apiError(400, "about us is required");
   }
   if (!address) {
@@ -95,6 +99,7 @@ const schoolAdd = asyncHandler(async (req, res) => {
   const logo = await file(Logo[0], "jpeg");
   try {
     const data = new School(
+      schoolId,
       name,
       address,
       city,

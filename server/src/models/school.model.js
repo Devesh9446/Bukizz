@@ -1,5 +1,6 @@
 class School{
-    constructor(name,address,city,state,board,pincode,contactNumber,email,website,logo,banner,aboutUs,mission,image,ourInspiration){
+    constructor(schoolId,name,address,city,state,board,pincode,contactNumber,email,website,logo,banner,aboutUs,mission,image,ourInspiration){
+        this.id=schoolId;
         this.name=name;
         this.address=address;
         this.city=city;
@@ -18,5 +19,5 @@ class School{
         this.productId=[];
     }
 }
-
+ 
 export default School;
