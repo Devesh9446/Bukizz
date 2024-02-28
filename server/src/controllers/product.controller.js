@@ -112,17 +112,25 @@ const productAdd=asyncHandler(async(req,res)=>{
 
     const new_product1=new productModel(productId,name,description,categoryId,image,classId,board)
     new_product1.addSet(set);
-    new_product1.addSteam(stream);
+    
+    new_product1.addStream(stream||0);
+    const setIndex = new_product1.set.findIndex(setData => setData.name === setName);
+    const streamIndex = new_product1.stream.findIndex(streamData => streamData.name === streamName);
 
     const variation1=new Variation(price,salePrice,sku,image,costPerItem)
     const jsonData3 = JSON.stringify(variation1);
     const variation = JSON.parse(jsonData3);
-    new_product1.addVariation(setName,variation);//0 for setName bookset //1 for set+notebook set
+    new_product1.addVariation(setIndex, streamIndex, variation);
+
+    console.log(JSON.stringify(new_product1.variation.get(0).get(0)));
 
     const jsonData4 = JSON.stringify(new_product1);
+    console.log(jsonData4);
     const new_product= JSON.parse(jsonData4);
 
-    const resp = await addDoc(collection(app, "products"), new_product);
+    console.log(new_product);
+
+    const resp = await addDoc(collection(app, "test"), new_product);
     console.log(resp.id);
     res.status(200).json(new apiResponse(200,new_product,"data stored successfully"));
 })

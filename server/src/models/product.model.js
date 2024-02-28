@@ -33,23 +33,45 @@ class productModel{
         this.stream=[];
         this.set=[];
         this.reviewList=[];
-        this.variation=new Map();
+        this.variation = new Map();
     }
-    addSteam(stream){
-        this.stream.push(stream);
+    addSet(set) {
+        const existingSetIndex = this.set.findIndex(existingSet => existingSet.name === set.name);
+        if (existingSetIndex === -1) {
+            this.set.push(set);
+        } 
     }
-    addSet(set){
-        this.set.push(set);
+    
+    addStream(stream) {
+        const existingStreamIndex = this.stream.findIndex(existingStream => existingStream.name === stream.name);
+        if (existingStreamIndex === -1) {
+            this.stream.push(stream);
+        }
     }
     addReviewList(reviewId){
         this.reviewList.push(reviewId);
     }
-    addVariation(setLength,variation){
-        console.log("added");
-        if (!this.variation.has(setLength)) {
-            this.variation.set(setLength, []);
+    addVariation(setIndex, streamIndex, variation) {
+        console.log(setIndex);
+        console.log(streamIndex);
+        console.log(variation);
+        if (setIndex >= 0) {
+            if (streamIndex >= 0) {
+                // if (!this.variation.has(setIndex)) {
+                //     this.variation.set(setIndex, new Map());
+                //     console.log("Adding set");
+                // }
+                const data = new Map();
+                data.set(streamIndex , JSON.stringify(variation));
+                this.variation.set(setIndex, data);
+
+                console.log("Data Added" + JSON.stringify(this.variation.get(setIndex).get(streamIndex)));
+            } else {
+                throw new apiError(400, "Invalid stream index");
+            }
+        } else {
+            throw new apiError(400, "Invalid set index");
         }
-        this.variation.get(setLength).push(variation);
     }
     streamLength(){
         return this.stream.length;
