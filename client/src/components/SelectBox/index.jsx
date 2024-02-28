@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
 import { ErrorMessage } from "../ErrorMessage";
@@ -27,7 +27,7 @@ const SelectBox = React.forwardRef(
     },
     ref,
   ) => {
-    const [selectedVal, setSelectedVal] = React.useState(value);
+    const [selectedVal, setSelectedVal] = React.useState({label:value, value});
 
     const handleChange = (data) => {
       setSelectedVal(data);
@@ -37,6 +37,9 @@ const SelectBox = React.forwardRef(
         onChange?.(data?.value);
       }
     };
+    useEffect(() => {
+      console.log("selectedval : " ,selectedVal);
+    }, [selectedVal]);
 
     return (
       <>

@@ -6,7 +6,9 @@ import { collection, query, doc, getDocs, where, updateDoc } from 'firebase/fire
 
 const order = asyncHandler(async (_, res) => {
     try {
-        const data = await getDocs(collection(app,"orderDetails"));
+        const snapshot = await getDocs(collection(app,"orderDetails"));
+        const data = snapshot.docs.map((doc) => doc.data());
+        // console.log(snapshot);
         if (data) {
             res.status(200).json(new apiResponse(200, data, "data send successfully"));
         } else {

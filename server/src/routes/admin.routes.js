@@ -6,6 +6,7 @@ import { categoryAdd } from "../controllers/category.controller.js";
 import {upload} from "../middleware/multer.middleware.js"
 import { general_products } from "../controllers/general_product.controller.js";
 import {product} from "../controllers/product.controller.js"
+import { ImageUPloader } from "../controllers/upload.controller.js";
 
 const router=Router();
 router.route("/orders").post(order);
@@ -17,6 +18,7 @@ router.route("/products/c/:categoryId").post(product);
 router.route("/school").post(schoolAdd);
 router.route("/category").post(category);
 router.route("/addcategory").post(upload.single("Image"),categoryAdd);
+router.route("/imageupload").post(upload.single("Image"), ImageUPloader);
 
 export default router;
    
