@@ -78,8 +78,9 @@ const productStockUpdate=asyncHandler(async(req,res)=>{
 })
 
 const productAdd=asyncHandler(async(req,res)=>{
-    const {productId,name,description,categoryId,classId,board,sku,salePrice,setName,price,costPerItem,streamName}=req.body;
-    if(!(productId,name,description,board,sku,salePrice,setName,price,costPerItem)){
+    console.log(req.body);
+    const { productId, name, retailerId, description, categoryId, classId, board, set, city, variation, stream }=req.body;
+    if(!(productId,name,description,board)){
         throw new apiError(400,"All fields required");
     }
     if(!categoryId){
@@ -89,50 +90,34 @@ const productAdd=asyncHandler(async(req,res)=>{
         throw new apiError(400,"classId is required");
     }
     
-    const Image=req.file;
-    console.log(req.file);
-    const fileName = Image.originalname.split(".");
-    async () => {
-        for (let i = 0; i < fileName.lenght(); i++) {
-        if (fileName[i].lowercase() !== "jpeg" || "jpg") {
-            throw new apiError(400, "File should be in Jpeg format");
-        }
-        }
-    };
-    const image = await file(Image, 'jpeg');
-    const set1=new SetData(setName);
-    set1.addImage(image);
-    const jsonData1 = JSON.stringify(set1);
-    const  set= JSON.parse(jsonData1);
-
-    const stream1=new Stream(streamName||0);
-    stream1.addImage(image); 
-    const jsonData2 = JSON.stringify(stream1);
-    const stream = JSON.parse(jsonData2);
-
-    const new_product1=new productModel(productId,name,description,categoryId,image,classId,board)
-    new_product1.addSet(set);
     
-    new_product1.addStream(stream||0);
-    const setIndex = new_product1.set.findIndex(setData => setData.name === setName);
-    const streamIndex = new_product1.stream.findIndex(streamData => streamData.name === streamName);
+    // const set1=new SetData(setName);
+    // set1.addImage(image);
+    // const jsonData1 = JSON.stringify(set1);
+    // const  set= JSON.parse(jsonData1);
 
-    const variation1=new Variation(price,salePrice,sku,image,costPerItem)
-    const jsonData3 = JSON.stringify(variation1);
-    const variation = JSON.parse(jsonData3);
-    new_product1.addVariation(setIndex, streamIndex, variation);
+    // const stream1=new Stream(streamName||0);
+    // stream1.addImage(image); 
+    // const jsonData2 = JSON.stringify(stream1);
+    // const stream = JSON.parse(jsonData2);
 
-    console.log(JSON.stringify(new_product1.variation.get(0).get(0)));
+    const new_product1 = new productModel({ city, productId, name, description, categoryId, classId, board, set, retailerId, stream, variation });
+    // console.log("new_product1",new_product1);
+    // new_product1.addSet(set);
+    // new_product1.addStream(stream || 0);
+    // const setIndex = new_product1.set.findIndex(setData => setData.name === setName);
+    // const streamIndex = new_product1.stream.findIndex(streamData => streamData.name === streamName);
+    // // console.log("setIndex : ",setIndex,streamIndex);
+    // const variation1=new Variation(price,salePrice,sku,image,costPerItem)
+    // new_product1.addVariation(setIndex, streamIndex, variation1.toJSON());
+    // const new_product = new_product1.toJSON();
 
-    const jsonData4 = JSON.stringify(new_product1);
-    console.log(jsonData4);
-    const new_product= JSON.parse(jsonData4);
+    console.log(new_product1);
 
-    console.log(new_product);
-
-    const resp = await addDoc(collection(app, "test"), new_product);
+    const resp = await addDoc(collection(app, "test"),new_product1.toJSON() );
     console.log(resp.id);
-    res.status(200).json(new apiResponse(200,new_product,"data stored successfully"));
+    // res.status(200).json(new apiResponse(200,"new_product1","data stored successfully"));
+    res.status(200).json(new apiResponse(200,new_product1,"data stored successfully"));
 })
 
 export {

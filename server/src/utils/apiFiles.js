@@ -2,7 +2,7 @@ import { File } from "buffer";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import fs from 'fs/promises';
 
-const file = async (filecontent, type) => {
+const file = async (filecontent, type,uploadPath="images/") => {
   const storage = getStorage();
 
   const metadata = {
@@ -10,7 +10,8 @@ const file = async (filecontent, type) => {
   };
   const fileBuffer = await fs.readFile(filecontent.path);
 
-  const storageRef = ref(storage, 'images/' + filecontent.originalname);
+
+  const storageRef = ref(storage, uploadPath + filecontent.originalname);
   const uploadTask = uploadBytesResumable(storageRef, fileBuffer, metadata);
   return new Promise((resolve, reject) => {
     uploadTask.on('state_changed',

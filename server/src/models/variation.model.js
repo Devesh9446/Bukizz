@@ -7,6 +7,16 @@ class Variation{
         this.costPerItem=costPerItem;
         this.reviewIdList=[];
     }
+    toJSON(){
+        return {
+            price:this.price,
+            salePrice:this.salePrice,
+            sku:this.sku,
+            image:this.image,
+            costPerItem:this.costPerItem,
+            reviewIdList:this.reviewIdList,
+        }
+    }
     addimage(image){
         this.image.push(image);
     }

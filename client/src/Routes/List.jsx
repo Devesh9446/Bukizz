@@ -26,6 +26,18 @@ const List = [
         innerElememt: [],
     },
     {
+        title: "Orders",
+        icon: "images/img_bag.svg",
+        path: "/orders",
+        innerElememt: [],
+    },
+    {
+        title: "addProduct",
+        icon: "images/img_bag.svg",
+        path: "/addProduct",
+        innerElememt: [],
+    },
+    {
         title: "Tasks",
         icon: "images/img_clock.svg",
         path: "taskviews",
