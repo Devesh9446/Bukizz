@@ -8,7 +8,7 @@ const ImageUpload = ({
   className = "",
   wrapClassName = "",
   type = "file",
-  value = "",
+  value = [],
   uploadPath="",
   onChange = () => { }
 }) => {
@@ -23,8 +23,9 @@ const ImageUpload = ({
     if (file) {
       console.log("resp", resp);
       if (resp.success) {
-        setSelectedImage(resp.data);
-        onChange({ target: { name, value: resp.data } });
+        selectedImage.push(resp.data);
+        setSelectedImage(selectedImage);
+        onChange({ target: { name, value: selectedImage } });
       }
       // const reader = new FileReader();
       // reader.onloadend = () => {
@@ -49,12 +50,13 @@ const ImageUpload = ({
           className={`sr-only ${className}`}
           onChange={handleImageChange}
         />
-        <div className="mt-2">
-          {!loading && <Img
+        <div className="mt-2 flex gap-3">
+          {!loading && value.map((val,index)=>(<Img
+          key={index}
             className="h-16 w-16 object-cover"
-            src={selectedImage}
+            src={val}
             alt="No file selected"
-          />}
+          />))}
         </div>
       </label>
     </div>

@@ -32,7 +32,8 @@ router.route("/addschool").post(
 router.route("/product").post(product);
 router.route("/product/c/:categoryId").post(productByCategoryId);
 router.route("/product/c/:productId").post(productByproductId);
-router.route("/addproduct").post(upload.single("Image"),productAdd)
+// router.route("/addproduct").post(upload.single("Image"),productAdd)
+router.route("/addproduct").post(productAdd);
  
 router.route("/generalPoducts").post(general_products)
 

@@ -6,6 +6,7 @@ import Dashboard from "pages/Dashboard/Dashboard";
 import Categories from "pages/Categories/Categories";
 import Schools from "pages/Schools/Schools";
 import Orders from "pages/Orders/Orders";
+import AddProduct from "pages/AddProduct/AddProduct";
 const TaskViews = React.lazy(() => import("pages/TaskViews"));
 const RFID = React.lazy(() => import("pages/RFID"));
 const LoyaltySystem = React.lazy(() => import("pages/LoyaltySystem"));
@@ -36,6 +37,7 @@ const ProjectRoutes = () => {
           <Route path="/categories" element={<Categories />} />
           <Route path="/schools" element={<Schools />} />
           <Route path="/orders" element={<Orders/>} />
+          <Route path="/addProduct" element={<AddProduct/>} />
           <Route path="/baslinereporting" element={<BaslineReporting />} />
           <Route
             path="/customisedorderstatus"
