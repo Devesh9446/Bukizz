@@ -11,6 +11,7 @@ import {file} from '../utils/apiFiles.js'
 
 const product=asyncHandler(async(_,res)=>{
     try {
+        
         const snapshot = await getDocs(collection(app, "products"));
         const data = snapshot.docs.map((doc) => doc.data());
         console.log(snapshot);
