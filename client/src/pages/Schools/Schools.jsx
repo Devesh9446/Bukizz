@@ -11,25 +11,30 @@ import UpdateSchools from './UpdateSchools';
 
 function Schools() {
     const [showAddSchoolsForm, setShowAddSchoolForm] = useState(false);
-    const [schoolData,setSchoolData] =useState({});
+    const [schoolData, setSchoolData] = useState({});
     const [schoolsData, setSchoolsData] = useState([]);
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPages, setTotalPage] = useState(0);
     const handleSort = () => { }
 
     useEffect(() => {
-        if(!showAddSchoolsForm){
+        if (!showAddSchoolsForm) {
             getData();
         }
-    }, [showAddSchoolsForm])
+    }, [showAddSchoolsForm, limit, page]);
 
     const getData = async () => {
 
         try {
-            const resp = await fetchApi('/v1/admin/school');
+            const query = `page=${page}&limit=${limit}`;
+            const resp = await fetchApi(`/v1/admin/school?${query}`);
             // console.log(resp);
             if (resp.success) {
                 setSchoolsData(resp.data);
+                setTotalPage(resp.totalPages);
                 // Toast.fire({
                 //     icon: "success",
                 //     title: "Data fetched successfully",
@@ -41,7 +46,7 @@ function Schools() {
             console.log("error in fetching data", error);
             Toast.fire({
                 icon: "error",
-                title: "Mobile already linked with other account",
+                title: "Error Fetcching data",
             });
         }
     }
@@ -97,12 +102,12 @@ function Schools() {
                                 data={schoolsData}
                                 setSingleSchool={setSchoolData}
                                 setShowAddSchoolForm={setShowAddSchoolForm}
-                            //   page={page}
-                            //   limit={limit}
+                                page={page}
+                                limit={limit}
                             //   fetchData={fetchData}
                             />
                         </TableViewer>
-                        <Pagination page={1} totalPage={10} limit={10} setLimit={() => { }} />
+                        <Pagination page={page} setPage={setPage} totalPage={totalPages} limit={limit} setLimit={setLimit} />
                     </div>
                 </div>
             </div>
@@ -113,16 +118,16 @@ function Schools() {
 export default Schools;
 
 
-const Row = ({ data = [], setSingleSchool = () => { }, setShowAddSchoolForm=()=>{}, page = 1, limit = 1, }) => {
-
-    const handleClick=(el)=>{
+const Row = ({ data = [], setSingleSchool = () => { }, setShowAddSchoolForm = () => { }, page = 1, limit = 1, }) => {
+    console.log(page ,limit);
+    const handleClick = (el) => {
         setSingleSchool(el);
         setShowAddSchoolForm(true);
     }
     return (
         <>
             {data.map((el, index) => (
-                <tr key={el.schoolId} onClick={()=>{
+                <tr key={el.schoolId} onClick={() => {
                     handleClick(el);
                 }}>
                     <td>{(page - 1) * limit + index + 1}</td>

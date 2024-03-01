@@ -48,6 +48,8 @@ const Pagination = ({ page = 1, setPage = () => { }, totalPage = 1, limit, setLi
         <div>Rows per page</div>
         <div>
           <select value={limit} onChange={e => setLimit(e.target.value)}>
+            <option value="5">5</option>
+            <option value="10">10</option>
             <option value="20">20</option>
             <option value="40">40</option>
             <option value="60">60</option>
