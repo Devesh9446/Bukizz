@@ -41,11 +41,11 @@ const order = asyncHandler(async (req, res) => {
 });
 
 const fetchDataByStatus = asyncHandler(async (req, res) => {
-    const { status } = req.params; 
+    const { status } = req.params;
     try {
         const q = query(collection(app, "orderDetails"), where("status", "==", status));
         const snapshot = await getDocs(q);
-        if (snapshot.empty) { 
+        if (snapshot.empty) {
             res.status(200).json(new apiResponse(200, {}, "No data found for this status"));
         } else {
             const data = snapshot.docs.map(doc => doc.data());
@@ -57,24 +57,54 @@ const fetchDataByStatus = asyncHandler(async (req, res) => {
 });
 
 
-const updateOrder=asyncHandler(async(req,res)=>{
-    const {orderId}=req.param;
-    if(orderId){
-        throw new apiError(400,"Order id is required");
+const updateOrder = asyncHandler(async (req, res) => {
+    const { orderId } = req.param;
+    if (orderId) {
+        throw new apiError(400, "Order id is required");
     }
-    try{
-        const docRef=doc(app,"orderDetail",orderId)        
-        const updated_data=await updateDoc(docRef,{
-            satus:"Cancelled"
+    try {
+        const docRef = doc(app, "orderDetail", orderId)
+        const updated_data = await updateDoc(docRef, {
+            satus: "Cancelled"
         })
-        res.status(200).json(new apiResponse(200,updated_data,"data send succesfully"));
-    }catch(error){
-        throw new apiError(400,"Error:",error)
+        res.status(200).json(new apiResponse(200, updated_data, "data send succesfully"));
+    } catch (error) {
+        throw new apiError(400, "Error:", error)
     }
 });
+
+const sendToretailer = asyncHandler(async (req, res) => {
+    console.log(req.body);
+    const { orderId, retailerId } = req.body;
+    if (!orderId || !retailerId) {
+        throw new apiError(400, "Order id and retailerId is required");
+    }
+    try {
+        const docRef = doc(app, "orderDetails", orderId)
+        const updated_data = await updateDoc(docRef, {
+            retailerId:retailerId ,
+            status:"Processed",
+        })
+        res.status(200).json(new apiResponse(200, updated_data, "data send succesfully"));
+    } catch (error) {
+        throw new apiError(400, "Error:", error)
+    }
+})
+
+const getOrderDetails = asyncHandler(async (req, res) => {
+    const { orderId } = req.body;
+    const snapshot = await getDocs(query(collection(app, "orderDetails"), where("orderId", "==", orderId)));
+    if (!snapshot) {
+        new apiError(404, 'No Product found with this id');
+    }
+    const data = snapshot.docs.map((doc) => doc.data());
+    res.status(200).json(new apiResponse(200, data, "data send successfully"));
+})
 
 export {
     order,
     fetchDataByStatus,
     updateOrder,
+    sendToretailer, 
+    getOrderDetails,
 };
