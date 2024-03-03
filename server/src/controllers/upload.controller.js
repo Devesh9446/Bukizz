@@ -6,7 +6,7 @@ const ImageUPloader= asyncHandler(async (req,res) =>{
     const image = req.file;  
     const {uploadPath} = req.body || "images/";  
     if (!( image)) {
-        throw new apiError(400, "image is required");
+        throw new apiError(400, "image is required"); 
     }
     const fileName = image.originalname.split(".");
     async () => {

@@ -66,7 +66,7 @@ const productStockUpdate=asyncHandler(async(req,res)=>{
     if(!Updated_value<0){
         throw new apiError(400,"Updated value cannot be negative");
     }
-
+ 
     try{
         const instance=doc(app,"category",productId);
         const updated_data=await updateDoc(instance,{
@@ -115,7 +115,7 @@ const productAdd=asyncHandler(async(req,res)=>{
 
     console.log(new_product1);
 
-    const resp = await addDoc(collection(app, "test"),new_product1.toJSON() );
+    const resp = await addDoc(collection(app, "products"),new_product1.toJSON() );
     console.log(resp.id);
     // res.status(200).json(new apiResponse(200,"new_product1","data stored successfully"));
     res.status(200).json(new apiResponse(200,new_product1,"data stored successfully"));
