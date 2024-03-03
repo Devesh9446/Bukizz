@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {order,fetchDataByStatus} from "../controllers/order.controller.js"
+import {order,fetchDataByStatus, sendToretailer, getOrderDetails} from "../controllers/order.controller.js"
 import { schoolAdd,school } from "../controllers/school.controller.js";
 import {category ,categoryAdd} from "../controllers/category.controller.js"
 import {upload} from "../middleware/multer.middleware.js"
@@ -39,7 +39,9 @@ router.route("/addproduct").post(productAdd);
 router.route("/generalPoducts").post(general_products)
 
 router.route("/orders").post(order);
+router.route("/orders/readOne").post(getOrderDetails);
 router.route("/orders/c/:/status").post(fetchDataByStatus); 
+router.route("/orders/sendtoretailer").post(sendToretailer); 
 router.route("/imageupload").post(upload.single("Image"), ImageUPloader);
 router.route("/user/readOne").post(getUserDetails);
 router.route("/product/readOne").post(getProductDetails);
