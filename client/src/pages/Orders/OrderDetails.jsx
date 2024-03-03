@@ -2,27 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { Button, Img, Line, Text } from 'components';
 import { useLocation } from 'react-router-dom';
 import { fetchApi, fetchApi2 } from 'utils/fetchApi';
+import { Toast } from 'utils/swal';
 
 const OrderDetails = () => {
     const { state } = useLocation();
+    const [orderData, setOrderData] = useState(null);
     const [user, setUser] = useState();
     const [product, setProduct] = useState();
-    const schoolname = Object.keys(state.cartData)[0];
-    const productId = Object.keys(state.cartData[schoolname])[0];
-    const set = Object.keys(state.cartData[schoolname][productId])[0];
-    const stream = Object.keys(state.cartData[schoolname][productId][set])[0];
+    const [schoolname, setSchoolname] = useState(Object.keys(state.cartData)[0]);
+    const [productId, setProductId] = useState(Object.keys(state.cartData[schoolname])[0]);
+    const [set, setSet] = useState(Object.keys(state.cartData[schoolname][productId])[0]);
+    const [stream, setStream] = useState(Object.keys(state.cartData[schoolname][productId][set])[0]);
     const [sigleProduct, setSingleProduct] = useState();
     const orderStatus = ["Initiated", "Processed", "Packed", "Out for Delivery", "Delivered", "Replacement", "Not Placed ", "Cancelled"];
-    const tracknum = orderStatus.findIndex((item) => item === state?.status);
+    const [trackNum, setTrackNum] = useState(orderStatus.findIndex((item) => item === state?.status));
+
 
     useEffect(() => {
-        // console.log('data :', state);
+        console.log('data :', state);
         getData();
     }, [state]);
     const getData = async () => {
         try {
-            const [userData, productData] = await Promise.all([fetchApi2("/v1/admin/user/readOne", { userId: state.userId }), fetchApi2("/v1/admin/product/readOne", { productId: productId })]);
-            // console.log("Product data", productData);
+            const [userData, productData, orderDat] = await Promise.all([fetchApi2("/v1/admin/user/readOne", { userId: state.userId }), fetchApi2("/v1/admin/product/readOne", { productId: productId }), fetchApi2("/v1/admin/orders/readOne", { orderId: state.orderId })]);
+            console.log("Product data", productData);
             // console.log("user data", userData);
             if (userData) {
                 setUser(userData.data);
@@ -37,15 +40,47 @@ const OrderDetails = () => {
                 setSingleProduct(temp);
             }
 
+            if (orderDat) {
+                setOrderData(orderDat.data[0]);
+                const order = orderDat.data[0];
+                const updatedSchoolName = Object.keys(order.cartData)[0];
+                const updatedProductId = Object.keys(order.cartData[updatedSchoolName])[0];
+                const updatedSet = Object.keys(order.cartData[updatedSchoolName][updatedProductId])[0];
+                const updatedStream = Object.keys(order.cartData[updatedSchoolName][updatedProductId][updatedSet])[0];
+                const updatedTracknum = orderStatus.findIndex((item) => item === order?.status)
+                // Now, update the state with the extracted values
+                setSchoolname(updatedSchoolName);
+                setProductId(updatedProductId);
+                setSet(updatedSet);
+                setStream(updatedStream);
+                setTrackNum(updatedTracknum);
+            }
+
         } catch (error) {
             console.log('Error: ', error);
         }
     }
-    const handleRetailer = async ()=>{
+    const handleRetailer = async () => {
         try {
-            // const resp 
+            const data = {
+                orderId: state.orderId,
+                retailerId: product.retailerId
+                // retailerId: "hi govind ji"
+            }
+            const resp = await fetchApi2('/v1/admin/orders/sendtoretailer', data);
+            if (resp.success) {
+                Toast.fire({
+                    icon: "success",
+                    title: "Order sent to retailer",
+                });
+                getData();
+            }
         } catch (error) {
-            console.log("error sending to retailer",error);
+            console.log("error sending to retailer", error);
+            Toast.fire({
+                icon: "error",
+                title: "error sending to retailer",
+            });
         }
     }
     return (
@@ -144,7 +179,7 @@ const OrderDetails = () => {
                     </div>}
                 </div>
             </div>
-            {state && <div className="flex md:flex-col flex-row font-gilroy gap-[29px] items-start justify-between w-full">
+            {orderData && <div className="flex md:flex-col flex-row font-gilroy gap-[29px] items-start justify-between w-full">
 
                 <div className="flex md:flex-1 flex-col gap-[30px] items-center justify-start w-[60%] md:w-full">
                     <div className="bg-white-A700 flex flex-col gap-[37px] items-start justify-start p-4 rounded-md shadow-bs1 w-full">
@@ -184,7 +219,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        {state.address.houseNo} - {state.address.street} ,{state.address.city}, {state.address.state} - {state.address.pinCode}
+                                        {orderData?.address.houseNo} - {orderData?.address.street} ,{orderData?.address.city}, {orderData?.address.orderData} - {orderData?.address.pinCode}
                                     </Text>
                                 </div>
 
@@ -203,7 +238,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        {state.orderId}
+                                        {orderData?.orderId}
                                     </Text>
                                 </div>
                                 <div className="flex flex-row items-center justify-between mt-[5px] w-full">
@@ -217,7 +252,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        {state.orderName}
+                                        {orderData?.orderName}
                                     </Text>
                                 </div>
                                 <div className="flex flex-row items-start justify-between w-full">
@@ -231,7 +266,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        {state.transactionId}
+                                        {orderData?.transactionId}
                                     </Text>
                                 </div>
                             </div>
@@ -248,7 +283,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        ₹{state.saleAmount}
+                                        ₹{orderData?.saleAmount}
                                     </Text>
                                 </div>
                                 <div className="flex flex-row items-start justify-between w-full">
@@ -262,7 +297,7 @@ const OrderDetails = () => {
                                         className="text-black-900_01 text-lg"
                                         size="txtGilroyMedium18Black90001"
                                     >
-                                        ₹{state.deliveryCharge}
+                                        ₹{orderData?.deliveryCharge}
                                     </Text>
                                 </div>
                             </div>
@@ -278,7 +313,7 @@ const OrderDetails = () => {
                                     className="text-2xl md:text-[22px] text-black-900_01 sm:text-xl"
                                     size="txtGilroySemiBold24Black90001"
                                 >
-                                    ₹{state.saleAmount + state.deliveryCharge}
+                                    ₹{orderData?.saleAmount + orderData?.deliveryCharge}
                                 </Text>
                             </div>
                         </div>
@@ -297,7 +332,7 @@ const OrderDetails = () => {
                             </Text>
                         </div>
                     </div>
-                    {tracknum==0 && <Button
+                    {trackNum == 0 && <Button
                         className="cursor-pointer font-semibold rounded text-base text-center w-[386px]"
                         shape="round"
                         color="blue_A700_01"
@@ -323,7 +358,7 @@ const OrderDetails = () => {
                             <div className="absolute flex flex-col inset-[0] items-center justify-between w-[84%]">
                                 {orderStatus.map((item, index) => (
                                     <div key={index}>
-                                        {tracknum >= index ? (
+                                        {trackNum >= index ? (
                                             <Button
                                                 className=" flex h-6 inset-x-[0] items-center justify-center mx-auto outline outline-[1.5px] outline-gray-50 rounded-[50%]  w-6"
                                                 shape="circle"
@@ -350,8 +385,8 @@ const OrderDetails = () => {
                             {orderStatus.map((item, index) => (
                                 <Text
                                     key={index}
-                                    className={tracknum >= index ? "text-base text-blue-800" : "text-base text-blue_gray-200"}
-                                    size={tracknum <= index ? "txtGilroySemiBold16Blue800" : "txtGilroySemiBold16Bluegray200"}
+                                    className={trackNum >= index ? "text-base text-blue-800" : "text-base text-blue_gray-200"}
+                                    size={trackNum <= index ? "txtGilroySemiBold16Blue800" : "txtGilroySemiBold16Bluegray200"}
                                 >
                                     {item}
                                 </Text>
