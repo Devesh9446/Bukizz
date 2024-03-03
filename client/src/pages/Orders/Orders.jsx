@@ -5,36 +5,41 @@ import SearchBar from 'components/SearchBar/SearchBar';
 import TableViewer from 'components/TableViewer/TableViewer';
 import AddCategories from 'pages/Categories/AddCategories';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchApi } from 'utils/fetchApi';
 import { Toast } from 'utils/swal';
 // import UpdateSchools from './UpdateSchools';
 
 function Orders() {
     const [showAddSchoolsForm, setShowAddSchoolForm] = useState(false);
-    const [schoolData, setOrdersData] = useState({});
-    const [ordersData, setSchoolsData] = useState([]);
+    const [ordersData, setOrdersData] = useState([]);
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPages, setTotalPage] = useState(0);
     const handleSort = () => { }
 
     useEffect(() => {
         if (!showAddSchoolsForm) {
             getData();
         }
-    }, [showAddSchoolsForm])
+    }, [showAddSchoolsForm, limit, page])
 
     const getData = async () => {
 
         try {
-            const resp = await fetchApi('/v1/admin/orders');
+            const query = `page=${page}&limit=${limit}`;
+            const resp = await fetchApi(`/v1/admin/orders?${query}`);
             console.log(resp);
             if (resp.success) {
-                // setSchoolsData(resp.data);
+                setTotalPage(resp.totalPages);
+                setOrdersData(resp.data);
                 // Toast.fire({
                 //     icon: "success",
                 //     title: "Data fetched successfully",
                 // });
-                // setLoading(false);
+                setLoading(false);
             }
 
         } catch (error) {
@@ -85,11 +90,11 @@ function Orders() {
                         <TableViewer
                             heading={[
                                 "Sr.No",
-                                "Logo",
-                                "Name",
-                                "City",
-                                "Email",
-                                "Website",
+                                "Name of the school",
+                                "orderName",
+                                "saleAmount",
+                                "status",
+                                "cartLength",
                             ]}
                             loading={loading}
                         >
@@ -97,12 +102,12 @@ function Orders() {
                                 data={ordersData}
                                 setSingleSchool={setOrdersData}
                                 setShowAddSchoolForm={setShowAddSchoolForm}
-                            //   page={page}
-                            //   limit={limit}
+                                page={page}
+                                limit={limit}
                             //   fetchData={fetchData}
                             />
                         </TableViewer>
-                        <Pagination page={1} totalPage={10} limit={10} setLimit={() => { }} />
+                        <Pagination page={page} setPage={setPage} totalPage={totalPages} limit={limit} setLimit={setLimit} />
                     </div>
                 </div>
             </div>
@@ -114,7 +119,7 @@ export default Orders;
 
 
 const Row = ({ data = [], setSingleSchool = () => { }, setShowAddSchoolForm = () => { }, page = 1, limit = 1, }) => {
-
+    const navigate=useNavigate();
     const handleClick = (el) => {
         setSingleSchool(el);
         setShowAddSchoolForm(true);
@@ -122,20 +127,23 @@ const Row = ({ data = [], setSingleSchool = () => { }, setShowAddSchoolForm = ()
     return (
         <>
             {data.map((el, index) => (
-                <tr key={el.schoolId} onClick={() => {
-                    handleClick(el);
-                }}>
-                    <td>{(page - 1) * limit + index + 1}</td>
+                <tr key={index}
+                onClick={() => {
+                    navigate(`/orderDetails`, { state: el});
+                }}
+                >
+                    <td key={'sl.no'}>{(page - 1) * limit + index + 1}</td>
                     {/* <td> <Img
                         className="h-[60px] md:h-auto object-cover rounded-[3px] w-[60px]"
                         src={el.logo || el.image}
                         alt={`${el.name}'s Logo`}
                     />
                     </td> */}
-                    <td>{el.orderName}</td>
-                    <td>{el.city}</td>
-                    <td>{el.email}</td>
-                    <td><a href={el.website} target='blank'>{el.website}</a></td>
+                    <td key={'SchoolName'}>{el.cartData&&Object.keys(el.cartData)[0]}</td>
+                    <td key={'orderName'}>{el.orderName}</td>
+                    <td key={'saleAmount'}>{el.saleAmount}</td>
+                    <td key={'status'}>{el.status}</td>
+                    <td key={'cartlength'}>{el.cartLength}</td>
 
                 </tr>
 
