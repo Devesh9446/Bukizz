@@ -1,21 +1,42 @@
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { apiError } from '../utils/apiError.js';
-import { apiResponse } from '../utils/apiResponse.js';
+import { apiQuueryResponse, apiResponse } from '../utils/apiResponse.js';
 import { app } from '../firebase.js';
-import { collection, query, doc, getDocs, where, updateDoc } from 'firebase/firestore';
+import { collection, query, doc, getDocs, where, updateDoc, orderBy } from 'firebase/firestore';
 
-const order = asyncHandler(async (_, res) => {
+const order = asyncHandler(async (req, res) => {
     try {
-        const snapshot = await getDocs(collection(app,"orderDetails"));
-        const data = snapshot.docs.map((doc) => doc.data());
-        // console.log(snapshot);
-        if (data) {
-            res.status(200).json(new apiResponse(200, data, "data send successfully"));
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.limit) || 10;
+
+        const startAt = (page - 1) * pageSize;
+        const endAt = startAt + pageSize;
+
+        const snapshot = await getDocs(
+            query(
+                collection(app, "orderDetails"),
+                // orderBy("yourOrderByField") // Replace "yourOrderByField" with the actual field you want to order by
+            )
+        );
+
+        const totalItems = snapshot.docs.length;
+
+        const data = snapshot.docs.slice(startAt, endAt).map((doc) => doc.data());
+
+        if (data.length > 0) {
+            res.status(200).json(new apiQuueryResponse(200,
+                page,
+                pageSize,
+                totalItems,
+                Math.ceil(totalItems / pageSize),
+                data,
+                "Data sent successfully"
+            ));
         } else {
-            res.status(200).json(new apiResponse(200,{},"no data found")); 
+            res.status(200).json(new apiResponse(200, {}, "No data found"));
         }
     } catch (error) {
-        throw new apiError(400,error);
+        throw new apiError(400, error);
     }
 });
 
