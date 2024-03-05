@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { isBrowser } from "browser-or-node";
 import { getMessaging } from "firebase/messaging";
+let messaging;
+
 const firebaseConfig = {
   apiKey: "AIzaSyBbEk_1lDMvmMokbp7FVlA8BD1cApJb--M",
   authDomain: "bukizz1.firebaseapp.com",
@@ -15,11 +18,11 @@ const firebaseConfig = {
 const db = initializeApp(firebaseConfig);
 
 const app = getFirestore(db);
-const messaging = getMessaging(db);
-const ref = db.reference('/')
+if (isBrowser) {
+  messaging = getMessaging(db);
+}
 
 export{
   app,
   messaging,
-  ref
 }
