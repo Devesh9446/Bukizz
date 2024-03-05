@@ -1,5 +1,7 @@
 import app from "./app.js"
 import dotenv from 'dotenv'
+import browserEnv from 'browser-env';
+browserEnv(['navigator']);
 
 dotenv.config({
     path:'./.env'
