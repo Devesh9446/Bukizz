@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "browser-env": "^3.3.0",
+    "browser-or-node": "^3.0.0-pre.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
