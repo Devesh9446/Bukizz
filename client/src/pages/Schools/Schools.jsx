@@ -52,7 +52,8 @@ function Schools() {
     }
 
     if (showAddSchoolsForm) {
-        return <UpdateSchools data={schoolData} showModel={setShowAddSchoolForm} />
+        // return <UpdateSchools data={schoolData} showModel={setShowAddSchoolForm} />
+        return <UpdateSchools  showModel={setShowAddSchoolForm} />
     }
     return (
         <div className="bg-gray-50_01 flex sm:flex-col md:flex-col flex-row font-gilroy gap-[30px] items-start mx-auto w-full">

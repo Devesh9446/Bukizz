@@ -5,8 +5,9 @@ import { apiResponse } from "../utils/apiResponse.js";
 import { apiError } from "../utils/apiError.js";
 // import { ref } from "../firebase.js";
 import { getDatabase, ref, child, get } from "firebase/database";
+import { admin } from "../firebase-admin.js";
 
-const notification = async (message ,userId) => {
+const notification = async (message, userId) => {
     try {
         // const { message, userId } = req.body;
         if (!userId) {
@@ -17,12 +18,24 @@ const notification = async (message ,userId) => {
         }
         const dbRef = ref(getDatabase());
         const snapshot = await get(child(dbRef, `token/${userId}`));
-        if(snapshot.exists()) {
+        if (snapshot.exists()) {
             const token = snapshot.val().token;
-            console.log("token :" ,token);
-            const messaging = getMessaging();
+            console.log("token :", token);
+            // const messaging = getMessaging();
+            const noti = {
+                notification: {
+                    title: "Test notification",
+                    body: "notification body"
+                }
+            }
+            const notification_options = {
+                priority: "high",
+                timeToLive: 60 * 60 * 24
+            };
+            admin.messaging().sendToDevice(token, noti, notification_options).then((response) => {
+                console.log(response);
+            })
 
-            getMessaging().then
             // getToken(messaging, {
             //     vapidKey:
             //         "BKP_BG7FKEMCR405-Hht8o7Wh-jv41MtK1xp7a2w06Y4fH0ylcGuEfYDRaqGCXDM0Z4E7LJVUhfnoQok_jauqVU",
@@ -65,9 +78,7 @@ const notification = async (message ,userId) => {
             //         );
             //     });
 
-            return apiResponse(res, {
-                message: "Notifications sent successfully to user.",
-            });
+            return "noti sent successfullly";
 
         } else {
             console.log("no  such user!");
@@ -83,7 +94,7 @@ const notification = async (message ,userId) => {
         // });
 
         // const { token } = ref.child('token').child(userId).child('token');
-       
+
     } catch (error) {
         console.error("Error sending notifications:", error);
         // return apiError(res, 500, "Internal Server Error");

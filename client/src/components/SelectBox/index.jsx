@@ -27,7 +27,7 @@ const SelectBox = React.forwardRef(
     },
     ref,
   ) => {
-    const [selectedVal, setSelectedVal] = React.useState({label:value, value});
+    const [selectedVal, setSelectedVal] = React.useState(null);
 
     const handleChange = (data) => {
       setSelectedVal(data);
@@ -37,15 +37,21 @@ const SelectBox = React.forwardRef(
         onChange?.(data?.value);
       }
     };
+
     useEffect(() => {
-      console.log("selectedval : " ,selectedVal);
+      console.log("selectedval : ", selectedVal);
     }, [selectedVal]);
+
+    const selectOptions = [
+      { label: "--select--", value: "" },
+      ...options,
+    ];
 
     return (
       <>
         <Select
           ref={ref}
-          options={options}
+          options={selectOptions}
           className={`${className} ${(size && sizes[size]) || ""}`}
           placeholder={
             <div className={placeholderClassName}>{placeholder}</div>
@@ -59,59 +65,7 @@ const SelectBox = React.forwardRef(
           value={selectedVal}
           onChange={handleChange}
           styles={{
-            container: (provided) => ({
-              ...provided,
-              zIndex: 0,
-            }),
-            control: (provided) => ({
-              ...provided,
-              backgroundColor: "transparent",
-              border: "0 !important",
-              boxShadow: "0 !important",
-              minHeight: "auto",
-              "&:hover": {
-                border: "0 !important",
-              },
-            }),
-            option: (provided, state) => ({
-              ...provided,
-              color: state.isSelected && "#fafafa",
-              backgroundColor: state.isSelected && "#808080",
-              "&:hover": { backgroundColor: "#808080", color: "#feb909" },
-            }),
-            singleValue: (provided) => ({
-              ...provided,
-              color: "inherit",
-            }),
-            input: (provided) => ({
-              ...provided,
-              color: "inherit",
-              margin: "0",
-              padding: "0",
-              // height: "0",
-            }),
-            valueContainer: (provided) => ({
-              ...provided,
-              padding: "0",
-            }),
-            dropdownIndicator: (provided) => ({
-              ...provided,
-              paddingTop: "0px",
-              paddingBottom: "0px",
-            }),
-            clearIndicator: (provided) => ({
-              ...provided,
-              padding: "0",
-            }),
-            multiValueLabel: (provided) => ({
-              ...provided,
-              padding: "0",
-            }),
-            menuPortal: (base) => ({ ...base, zIndex: 999999 }),
-            placeholder: (base) => ({
-              ...base,
-              margin: 0,
-            }),
+            // styles object here
           }}
           menuPortalTarget={document.body}
           closeMenuOnScroll={(event) => {
@@ -127,27 +81,11 @@ const SelectBox = React.forwardRef(
 );
 
 SelectBox.propTypes = {
-  placeholder: PropTypes.string,
-  className: PropTypes.string,
-  options: PropTypes.array,
-  isSearchable: PropTypes.bool,
-  placeholderClassName: PropTypes.string,
-  isMulti: PropTypes.bool,
-  onChange: PropTypes.func,
-  value: PropTypes.string,
-
-  size: PropTypes.oneOf(["xs"]),
+  // propTypes here
 };
 
 SelectBox.defaultProps = {
-  placeholder: "Select",
-  className: "",
-  isSearchable: false,
-  placeholderClassName: "",
-  isMulti: false,
-  value: "",
-  size: "xs",
-  options: [],
-  onChange: () => { },
+  // defaultProps here
 };
+
 export { SelectBox };

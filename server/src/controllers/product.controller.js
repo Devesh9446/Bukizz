@@ -1,4 +1,3 @@
-import { apiError } from '../utils/apiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { apiResponse } from '../utils/apiResponse.js';
 import { app } from "../firebase.js"
@@ -8,6 +7,7 @@ import { Stream } from '../models/Stream.model.js';
 import { Variation } from '../models/variation.model.js';
 import { productModel } from '../models/product.model.js';
 import { file } from '../utils/apiFiles.js'
+import { apiError } from '../utils/apiError.js';
 
 const getProductDetails = asyncHandler(async (req, res) => {
     const { productId } = req.body;
@@ -31,13 +31,14 @@ const product = asyncHandler(async (_, res) => {
 })
 
 const productByCategoryId = asyncHandler(async (req, res) => {
-    const { id } = req.param;
+    const { id } = req.body;
     if (!id) {
         throw new apiError(404, "category id is required");
     }
     try {
         const q = query(collection(app, "products"), where("categoryId", "==", id));
-        const data = await getDocs(q);
+        const snapshot = await getDocs(q);
+         const data = snapshot.docs.map((doc) => doc.data());
         if (!data) {
             res.status(200).json(new apiResponse(200, {}, "no data found"));
         }

@@ -7,7 +7,8 @@ import { app } from "../firebase.js";
 
 const notification = asyncHandler(async (req, res) => {
   try {
-    const { message, userId } = req.body;
+    const { message} = req.body;
+    const userId ="juTtklcvlVOr3qr1dWGfP6yA7Y23";
     if (!userId) {
       throw new apiError(400, "userId is required");
     }
@@ -16,9 +17,10 @@ const notification = asyncHandler(async (req, res) => {
     }
 
     // Retrieve the token from Firestore
-    const tokenRef = app.collection('tokens').doc(userId);
-    const doc = await tokenRef.get();
-    const token = doc.data().token;
+    // const tokenRef = app.collection('tokens').doc(userId);
+    // const doc = await tokenRef.get();
+    // const token = doc.data().token;
+    const token = "cmwAoIIfRfWEVgLxl8jRxK:APA91bHIgyDhhQ2Hp4udeOS_EH-lidk96Mr_2Kucgw4Ka72OoPoGuoDxKZo2Uj5fHg9D7S_EHz2WEmPl9X96JYttw99rOuLHOSUWbgBbFOQQ4X9yPdeILCrwiPntgKB2bDsAaG_0fVJO";
 
     // Get the messaging token
     const currentToken = await getToken(messaging, {
