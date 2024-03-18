@@ -3,6 +3,7 @@ import { apiError } from '../utils/apiError.js';
 import { apiQuueryResponse, apiResponse } from '../utils/apiResponse.js';
 import { app } from '../firebase.js';
 import { collection, query, doc, getDocs, where, updateDoc, orderBy } from 'firebase/firestore';
+import { notification } from '../utils/notifications.js';
 
 const order = asyncHandler(async (req, res) => {
     try {
@@ -80,12 +81,14 @@ const sendToretailer = asyncHandler(async (req, res) => {
         throw new apiError(400, "Order id and retailerId is required");
     }
     try {
-        const docRef = doc(app, "orderDetails", orderId)
-        const updated_data = await updateDoc(docRef, {
-            retailerId:retailerId ,
-            status:"Processed",
-        })
-        res.status(200).json(new apiResponse(200, updated_data, "data send succesfully"));
+        // const docRef = doc(app, "orderDetails", orderId)
+        // const updated_data = await updateDoc(docRef, {
+        //     retailerId:retailerId ,
+        //     status:"Processed",
+        // })
+        notification("testing notificatin","juTtklcvlVOr3qr1dWGfP6yA7Y23");
+        res.status(200).json(new apiResponse(200, {hi:"dllkk"}, "data send succesfully"));
+        // res.status(200).json(new apiResponse(200, updated_data, "data send succesfully"));
     } catch (error) {
         throw new apiError(400, "Error:", error)
     }

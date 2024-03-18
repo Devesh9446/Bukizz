@@ -1,7 +1,7 @@
-import {asyncHandler} from "../utils/asyncHandler";
-import { apiError } from "../utils/apiError";
-import { apiResponse } from "../utils/apiResponse";
-import {app} from './firebase.js';
+import {asyncHandler} from "../utils/asyncHandler.js";
+import { apiError } from "../utils/apiError.js";
+import { apiResponse } from "../utils/apiResponse.js";
+import {app} from '../firebase.js';
 import {doc,getDoc,query,collection,where} from 'fierbase/firestore';
 
 const vendors=asyncHandler(async(_,res)=>{
@@ -23,6 +23,9 @@ const vendor_orders=asyncHandler(async(req,res)=>{
     const {vendor}=req.param;
     try{
         const q=query(collection(app,"orderDetail"),where("vendor"))
+    }
+    catch(error){
+        throw new apiError(400,error);
     }
 })
 export {

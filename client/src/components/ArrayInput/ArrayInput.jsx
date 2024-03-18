@@ -64,7 +64,7 @@ const ArrayInput = React.forwardRef(
                         {value.map((item, index) => (
                             <li key={index} className='flex rounded bg-gray-200 p-2'>
                                 {item}
-                                <button className='bg-red-500 text-white px-2 py-1 rounded ml-2' onClick={() => handleRemoveItem(index)}>Remove</button>
+                                <button className='bg-red-500 text-white px-2 py-1 rounded ml-2' onClick={() => handleRemoveItem(index)}>X</button>
                             </li>
                         ))}
                     </ul>

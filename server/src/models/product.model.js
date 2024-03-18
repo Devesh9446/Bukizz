@@ -39,7 +39,7 @@ class productModel{
             this.set.push(new SetData(element).toJSON());
         });
         stream.forEach(element => {
-            this.set.push(new Stream(element).toJSON());
+            this.stream.push(new Stream(element).toJSON());
         });
         
     }

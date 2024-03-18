@@ -1,4 +1,4 @@
-import { file } from "../utils/apiFiles.js";
+import { deleteFile, file } from "../utils/apiFiles.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -22,4 +22,14 @@ const ImageUPloader= asyncHandler(async (req,res) =>{
         .json(new apiResponse(200, imageLink, "Image uploaded successfully"));
 });
 
-export {ImageUPloader};
+
+const imageDelete = asyncHandler(async (req, res) => {
+    const { image } = req.body;
+    if (!image) {
+        throw new apiError(400, "image url is required");
+    }
+    const resp = await deleteFile(image);
+    res.status(200).json(new apiResponse(200, resp, "Image deleted successfully"));
+});
+
+export { ImageUPloader, imageDelete };

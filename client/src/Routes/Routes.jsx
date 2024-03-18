@@ -30,37 +30,37 @@ const ProjectRoutes = () => {
   return (
     <React.Suspense fallback={<>Loading...</>}>
       {/* <Router> */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="*" element={<NotFound />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/schools" element={<Schools />} />
-          <Route path="/orders" element={<Orders/>} />
-          <Route path="/orderDetails" element={<OrderDetails/>} />
-          <Route path="/addProduct" element={<AddProduct/>} />
-          <Route path="/baslinereporting" element={<BaslineReporting />} />
-          <Route
-            path="/customisedorderstatus"
-            element={<CustomisedOrderStatus />}
-          />
-          <Route path="/ordertracking" element={<OrderTracking />} />
-          <Route path="/expensetracking" element={<ExpenseTracking />} />
-          <Route path="/expressdelivery" element={<ExpressDelivery />} />
-          <Route
-            path="/enablelinkedaccounts"
-            element={<EnableLinkedAccounts />}
-          />
-          <Route path="/freecredits" element={<FreeCredits />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/requestmanagement" element={<RequestManagement />} />
-          <Route path="/reviewapproval" element={<ReviewApproval />} />
-          <Route path="/projectstracking" element={<ProjectsTracking />} />
-          <Route path="/loyaltysystem" element={<LoyaltySystem />} />
-          <Route path="/rfid" element={<RFID />} />
-          <Route path="/taskviews" element={<TaskViews />} />
-        </Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/schools" element={<Schools />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orderDetails" element={<OrderDetails />} />
+        <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/baslinereporting" element={<BaslineReporting />} />
+        <Route
+          path="/customisedorderstatus"
+          element={<CustomisedOrderStatus />}
+        />
+        <Route path="/ordertracking" element={<OrderTracking />} />
+        <Route path="/expensetracking" element={<ExpenseTracking />} />
+        <Route path="/expressdelivery" element={<ExpressDelivery />} />
+        <Route
+          path="/enablelinkedaccounts"
+          element={<EnableLinkedAccounts />}
+        />
+        <Route path="/freecredits" element={<FreeCredits />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/requestmanagement" element={<RequestManagement />} />
+        <Route path="/reviewapproval" element={<ReviewApproval />} />
+        <Route path="/projectstracking" element={<ProjectsTracking />} />
+        <Route path="/loyaltysystem" element={<LoyaltySystem />} />
+        <Route path="/rfid" element={<RFID />} />
+        <Route path="/taskviews" element={<TaskViews />} />
+      </Routes>
       {/* </Router> */}
     </React.Suspense>
   );

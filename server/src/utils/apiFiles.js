@@ -1,6 +1,6 @@
-import { File } from "buffer";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import fs from 'fs/promises';
+import { apiError } from "./apiError.js";
 
 const file = async (filecontent, type,uploadPath="images/") => {
   const storage = getStorage();
@@ -36,5 +36,33 @@ const file = async (filecontent, type,uploadPath="images/") => {
     );
   });
 }
+// if i have a file url of firebase ,write the function to delete the file
+// from firebase storage
+// and return the response
 
-export { file };
+
+const deleteFile = async (file) => {
+  console.log("file:  ", file.split("/")[7]);
+  const filePath = decodeURIComponent(
+    file
+      .split("/")[7]
+      .split("?")[0]
+  );
+
+  // Getting a reference to the file in Firebase Storage
+  const storage = getStorage();
+  const fileRef = ref(storage, filePath);
+
+  try {
+    // Deleting the file
+    await deleteObject(fileRef);
+    return {  message: "File deleted successfully." };
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    new apiError(400, "Error deleting file");
+  }
+}
+
+
+
+export { file, deleteFile };
