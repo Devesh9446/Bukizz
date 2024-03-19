@@ -3,7 +3,7 @@ import { SetData } from "./SetData.model.js";
 import { Stream } from "./Stream.model.js";
 
 class productModel{
-    constructor({ city, productId, name, description, categoryId, classId, board, set = [], retailerId = "",stream=[],variation={}}){
+    constructor({ city, productId, name, description,deliveryCharge, categoryId, classId, board, set = [], retailerId = "",stream=[],variation={}}){
         if(!name){
             throw new apiError(400,"Product name is required");
         }
@@ -31,7 +31,7 @@ class productModel{
         this.retailerId=retailerId;
         this.stream=[];
         this.set=[];
-
+        this.deliveryCharge=deliveryCharge;
         this.reviewList=[];
         this.variation = variation;
 
@@ -56,8 +56,9 @@ class productModel{
             retailerId:this.retailerId,
             stream:this.stream,
             set:this.set,
-             reviewIdList:this.reviewList,
+            reviewIdList:this.reviewList,
             variation:this.variation,
+            deliveryCharge:this.deliveryCharge
          };
     }
     addSet(set) {

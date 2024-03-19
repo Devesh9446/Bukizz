@@ -38,10 +38,18 @@ const Input = React.forwardRef(
       color = "white_A700",
       ...restProps
     },
-    ref,
+    ref
   ) => {
     const handleChange = (e) => {
-      if (onChange) onChange(e);
+      if (onChange) {
+        if (type == "number") {
+          onChange({
+            target: { name, value: parseInt(e.target.value, 10) },
+          });
+        } else {
+          onChange(e);
+        }
+      }
     };
 
     return (
@@ -68,7 +76,7 @@ const Input = React.forwardRef(
         {!!errors && <ErrorMessage errors={errors} />}
       </>
     );
-  },
+  }
 );
 
 Input.propTypes = {
