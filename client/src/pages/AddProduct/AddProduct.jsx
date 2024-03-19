@@ -72,6 +72,7 @@ function AddProduct({}) {
     set: [],
     reviewList: [],
     variation: "",
+    deliveryCharge: 0,
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -227,6 +228,25 @@ function AddProduct({}) {
               wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
               type="text"
               value={formData.classId}
+              onChange={handleChange}
+            ></Input>
+          </div>
+          <div className="flex flex-col items-center justify-start w-full">
+            <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
+              <Text
+                className="text-blue_gray-900 text-lg"
+                size="txtGilroyMedium18"
+              >
+                Delivery Charge:
+              </Text>
+            </div>
+            <Input
+              name="deliveryCharge"
+              placeholder="Enter deliveryCharge"
+              className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+              wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+              type="number"
+              value={formData.deliveryCharge}
               onChange={handleChange}
             ></Input>
           </div>
@@ -486,10 +506,11 @@ const Variants = (
       updatedVariants[setIndex] = {};
     }
     const { name: fieldName, value: fieldValue } = event.target;
-    updatedVariants[setIndex][streamIndex] = {
-      ...updatedVariants[setIndex][streamIndex],
-      [fieldName]: fieldValue,
-    };
+    console.log(typeof fieldValue, fieldValue, "fieldName");
+      updatedVariants[setIndex][streamIndex] = {
+        ...updatedVariants[setIndex][streamIndex],
+        [fieldName]: fieldValue,
+      };
     setVariants(updatedVariants);
     onChange({ target: { name: name, value: variants } });
   };
@@ -519,13 +540,13 @@ const Variants = (
             {`${setName} :`}
           </Text>
           <div className={`${wrapClassName} px-7`}>
-            {stream.map((streamName, streamIndex) => (
-              <div key={streamIndex}>
+            {stream.length === 0 ? (
+              <div>
                 <Text
                   className="text-blue_gray-900 text-lg"
                   size="txtGilroyMedium18"
                 >
-                  {`${streamName} :`}
+                  Stream 1 :
                 </Text>
                 <div className="flex items-center gap-3">
                   <Input
@@ -534,10 +555,8 @@ const Variants = (
                     className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                     type="number"
-                    value={variants[setIndex]?.[streamIndex]?.price || ""}
-                    onChange={(e) =>
-                      handlePriceChange(setIndex, streamIndex, e)
-                    }
+                    value={variants[setIndex]?.[0]?.price || 0}
+                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
                   />
                   <Input
                     name="salePrice"
@@ -545,10 +564,8 @@ const Variants = (
                     className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                     type="number"
-                    value={variants[setIndex]?.[streamIndex]?.salePrice || ""}
-                    onChange={(e) =>
-                      handlePriceChange(setIndex, streamIndex, e)
-                    }
+                    value={variants[setIndex]?.[0]?.salePrice || 0}
+                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
                   />
                   <Input
                     name="sku"
@@ -556,10 +573,8 @@ const Variants = (
                     className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                     type="number"
-                    value={variants[setIndex]?.[streamIndex]?.sku || ""}
-                    onChange={(e) =>
-                      handlePriceChange(setIndex, streamIndex, e)
-                    }
+                    value={variants[setIndex]?.[0]?.sku || 0}
+                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
                   />
                   <Input
                     name="costPerItem"
@@ -567,12 +582,9 @@ const Variants = (
                     className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                     type="number"
-                    value={variants[setIndex]?.[streamIndex]?.costPerItem || ""}
-                    onChange={(e) =>
-                      handlePriceChange(setIndex, streamIndex, e)
-                    }
+                    value={variants[setIndex]?.[0]?.costPerItem || 0}
+                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
                   />
-
                   <ImageUpload
                     name="image"
                     placeholder="Enter image"
@@ -580,15 +592,86 @@ const Variants = (
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
                     type="file"
                     allowMultiple={true}
-                    value={variants[setIndex]?.[streamIndex]?.image}
-                    onChange={(e) =>
-                      handlePriceChange(setIndex, streamIndex, e)
-                    }
+                    value={variants[setIndex]?.[0]?.image}
+                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
                     uploadPath={`product_image/variation/`}
                   />
                 </div>
               </div>
-            ))}
+            ) : (
+              stream.map((streamName, streamIndex) => (
+                <div key={streamIndex}>
+                  <Text
+                    className="text-blue_gray-900 text-lg"
+                    size="txtGilroyMedium18"
+                  >
+                    {`${streamName} :`}
+                  </Text>
+                  <div className="flex items-center gap-3">
+                    <Input
+                      name="price"
+                      placeholder="Enter Price"
+                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+                      type="number"
+                      value={variants[setIndex]?.[streamIndex]?.price || 0}
+                      onChange={(e) =>
+                        handlePriceChange(setIndex, streamIndex, e)
+                      }
+                    />
+                    <Input
+                      name="salePrice"
+                      placeholder="Enter Sale Price"
+                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+                      type="number"
+                      value={variants[setIndex]?.[streamIndex]?.salePrice || 0}
+                      onChange={(e) =>
+                        handlePriceChange(setIndex, streamIndex, e)
+                      }
+                    />
+                    <Input
+                      name="sku"
+                      placeholder="Enter sku"
+                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+                      type="number"
+                      value={variants[setIndex]?.[streamIndex]?.sku || 0}
+                      onChange={(e) =>
+                        handlePriceChange(setIndex, streamIndex, e)
+                      }
+                    />
+                    <Input
+                      name="costPerItem"
+                      placeholder="Enter cost Per Item"
+                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+                      type="number"
+                      value={
+                        variants[setIndex]?.[streamIndex]?.costPerItem || ""
+                      }
+                      onChange={(e) =>
+                        handlePriceChange(setIndex, streamIndex, e)
+                      }
+                    />
+
+                    <ImageUpload
+                      name="image"
+                      placeholder="Enter image"
+                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-60"
+                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+                      type="file"
+                      allowMultiple={true}
+                      value={variants[setIndex]?.[streamIndex]?.image}
+                      onChange={(e) =>
+                        handlePriceChange(setIndex, streamIndex, e)
+                      }
+                      uploadPath={`product_image/variation/`}
+                    />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       ))}
@@ -612,7 +695,7 @@ const Variants = (
                 className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                 wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                 type="number"
-                value={variants[0]?.[0]?.price || ""}
+                value={variants[0]?.[0]?.price || 0}
                 onChange={(e) => handlePriceChange(0, 0, e)}
               />
               <Input
@@ -621,7 +704,7 @@ const Variants = (
                 className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                 wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                 type="number"
-                value={variants[0]?.[0]?.salePrice || ""}
+                value={variants[0]?.[0]?.salePrice || 0}
                 onChange={(e) => handlePriceChange(0, 0, e)}
               />
               <Input
@@ -630,7 +713,7 @@ const Variants = (
                 className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                 wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                 type="number"
-                value={variants[0]?.[0]?.sku || ""}
+                value={variants[0]?.[0]?.sku || 0}
                 onChange={(e) => handlePriceChange(0, 0, e)}
               />
               <Input
@@ -639,7 +722,7 @@ const Variants = (
                 className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                 wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
                 type="number"
-                value={variants[0]?.[0]?.costPerItem || ""}
+                value={variants[0]?.[0]?.costPerItem || 0}
                 onChange={(e) => handlePriceChange(0, 0, e)}
               />
               <ImageUpload
