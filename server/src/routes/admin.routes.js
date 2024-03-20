@@ -15,6 +15,7 @@ import {
   productByproductId,
   productAdd,
   getProductDetails,
+  generalProductAdd,
 } from "../controllers/product.controller.js";
 import {
   ImageUPloader,
@@ -35,6 +36,7 @@ router.route("/product").post(product);
 router.route("/product/categoryId").post(productByCategoryId);
 router.route("/product/c/:productId").post(productByproductId);
 router.route("/addproduct").post(productAdd);
+router.route("/addgeneralproduct").post(generalProductAdd);
 
 router.route("/generalPoducts").post(general_products);
 

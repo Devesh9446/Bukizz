@@ -16,7 +16,7 @@ class School {
     mission,
     image,
     ourInspiration,
-    productId,
+    productsId,
     uniformId
   ) {
     this.id = schoolId;
@@ -35,7 +35,7 @@ class School {
     this.mission = mission;
     this.image = image;
     this.ourInspiration = ourInspiration;
-    this.productId = productId || [];
+    this.productsId = productsId || [];
     this.uniformId = uniformId || [];
   }
 
@@ -57,7 +57,7 @@ class School {
       mission: this.mission,
       image: this.image,
       ourInspiration: this.ourInspiration,
-      productId: this.productId,
+      productsId: this.productsId,
       uniformId: this.uniformId,
     };
   }

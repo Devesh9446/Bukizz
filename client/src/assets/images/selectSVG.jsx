@@ -14,9 +14,9 @@ export const SelectSVG = ({
       <g
         fill="none"
         stroke="#000"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="16"
       >
         <path d="m16.000736 48.000563a31.999783 31.999783 0 0 1 31.999783-31.999781" />
         <path
