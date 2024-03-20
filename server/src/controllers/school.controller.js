@@ -65,7 +65,7 @@ const schoolAdd = asyncHandler(async (req, res) => {
     logo,
     banner,
     image,
-    productId,
+    productsId,
     uniformId,
   } = req.body;
 
@@ -79,15 +79,15 @@ const schoolAdd = asyncHandler(async (req, res) => {
     "email",
     "mission",
     "name",
-    "ourInspiration",
+    // "ourInspiration",
     "pincode",
     "state",
     "website",
     "schoolId",
-    "logo",
+    // "logo",
     "banner",
-    "image",
-    "productId",
+    // "image",
+    "productsId",
     "uniformId",
   ];
   for (const field of requiredFields) {
@@ -115,7 +115,7 @@ const schoolAdd = asyncHandler(async (req, res) => {
       mission,
       image,
       ourInspiration,
-      productId,
+      productsId,
       uniformId
     );
 
@@ -123,7 +123,7 @@ const schoolAdd = asyncHandler(async (req, res) => {
     const jsonData = data.toJson();
 
     // Add school data to Firestore
-    const instance = collection(app, "testSchool");
+    const instance = collection(app, "schools");
     const addData = await addDoc(instance, jsonData);
 
     res

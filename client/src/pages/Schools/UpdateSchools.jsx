@@ -24,14 +24,14 @@ function UpdateSchools({
     mission: "",
     image: "",
     ourInspiration: "",
-    productId: [],
+    productsId: [],
     uniformId: [],
   },
   showModel = () => {},
 }) {
   //   console.log("data", data);
   const [formData, setFormData] = useState(data);
-  const [product, setProduct] = useState(data.productId);
+  const [product, setProduct] = useState(data.productsId);
   const [uniform, setUniform] = useState(data.uniformId);
 
   const getData = async () => {
@@ -69,7 +69,7 @@ function UpdateSchools({
     const resp = await fetchApi2("/v1/admin/addschool", formData);
     console.log("resp", resp);
     if (resp.success) {
-      showModel(false);
+      // showModel(false);
       Toast.fire({
         icon: "success",
         title: "School updated successfully",
@@ -186,9 +186,7 @@ function UpdateSchools({
               placeholder="Enter Contact Number"
               className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
               wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-              type="number"
-              min="0"
-              max="9999999999"
+              type="text"
               value={formData.contactNumber}
               onChange={handleChange}
             ></Input>
@@ -246,7 +244,7 @@ function UpdateSchools({
                   />
                 }
                 isMulti={true}
-                name="productId"
+                name="productsId"
                 options={
                   product?.map((item) => ({
                     label: (
@@ -258,14 +256,14 @@ function UpdateSchools({
                         {item.name}
                       </div>
                     ),
-                    value: item.productId,
+                    value: item.productsId,
                   })) || []
                 }
                 isSearchable={true}
                 placeholder="Select Product"
-                value={formData.productId}
+                value={formData.productsId}
                 onChange={(data) => {
-                  handleChange({ target: { name: "productId", value: data } });
+                  handleChange({ target: { name: "productsId", value: data } });
                 }}
                 size="xs"
               />
@@ -302,7 +300,7 @@ function UpdateSchools({
                         {item.name}
                       </div>
                     ),
-                    value: item.productId,
+                    value: item.productsId,
                   })) || []
                 }
                 isSearchable={true}
@@ -361,7 +359,7 @@ function UpdateSchools({
                   placeholder="Enter Pincode"
                   className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                   wrapClassName="py-1 w-full border border-blue_gray-100 rounded"
-                  type="number"
+                  type="text"
                   min="0"
                   max="999999"
                   value={formData.pincode}

@@ -66,7 +66,7 @@ function AddProduct({}) {
     description: "",
     categoryId: "",
     classId: "",
-    board: "cbse",
+    board: "CBSE",
     retailerId: "",
     stream: [],
     set: [],
@@ -271,8 +271,8 @@ function AddProduct({}) {
                 isMulti={false}
                 name="board"
                 options={[
-                  { label: "CBSE", value: "cbse" },
-                  { label: "ICSE", value: "icse" },
+                  { label: "CBSE", value: "CBSE" },
+                  { label: "ICSE", value: "ICSE" },
                 ]}
                 isSearchable={false}
                 placeholder="Select board"
@@ -506,11 +506,28 @@ const Variants = (
       updatedVariants[setIndex] = {};
     }
     const { name: fieldName, value: fieldValue } = event.target;
-    console.log(typeof fieldValue, fieldValue, "fieldName");
+    console.log(
+      typeof (parseInt(fieldValue, 10) + 0.01),
+      fieldValue,
+      "fieldName"
+    );
+    if (fieldName === "costPerItem"){
+      updatedVariants[setIndex][streamIndex] = {
+        ...updatedVariants[setIndex][streamIndex],
+        [fieldName]: parseInt(fieldValue, 10)+0.01,
+        // [fieldName]: parseFloat(fieldValue),
+      };
+    }
+    else {
       updatedVariants[setIndex][streamIndex] = {
         ...updatedVariants[setIndex][streamIndex],
         [fieldName]: fieldValue,
       };
+    }
+      // updatedVariants[setIndex][streamIndex] = {
+      //   ...updatedVariants[setIndex][streamIndex],
+      //   [fieldName]: fieldValue,
+      // };
     setVariants(updatedVariants);
     onChange({ target: { name: name, value: variants } });
   };
@@ -581,7 +598,7 @@ const Variants = (
                     placeholder="Enter cost Per Item"
                     className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                     wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                    type="number"
+                    type="text"
                     value={variants[setIndex]?.[0]?.costPerItem || 0}
                     onChange={(e) => handlePriceChange(setIndex, 0, e)}
                   />
@@ -646,7 +663,7 @@ const Variants = (
                       placeholder="Enter cost Per Item"
                       className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                       wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                      type="number"
+                      type="text"
                       value={
                         variants[setIndex]?.[streamIndex]?.costPerItem || ""
                       }
@@ -721,7 +738,7 @@ const Variants = (
                 placeholder="Enter cost Per Item"
                 className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
                 wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                type="number"
+                type="text"
                 value={variants[0]?.[0]?.costPerItem || 0}
                 onChange={(e) => handlePriceChange(0, 0, e)}
               />

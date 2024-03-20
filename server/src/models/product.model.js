@@ -36,7 +36,11 @@ class productModel{
         this.variation = variation;
 
         set.forEach(element => {
-            this.set.push(new SetData(element).toJSON());
+            var img= variation[set.indexOf(element)][0].image;
+            var price=variation[set.indexOf(element)][0].price;
+            var sku=variation[set.indexOf(element)][0].sku;
+            var salePrice=variation[set.indexOf(element)][0].salePrice;
+            this.set.push(new SetData(element, img, price,sku, salePrice).toJSON());
         });
         stream.forEach(element => {
             this.stream.push(new Stream(element).toJSON());

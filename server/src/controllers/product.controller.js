@@ -16,6 +16,7 @@ import { Variation } from "../models/variation.model.js";
 import { productModel } from "../models/product.model.js";
 import { file } from "../utils/apiFiles.js";
 import { apiError } from "../utils/apiError.js";
+import { GeneralProductModel } from "../models/generalProduct.model.js";
 
 const getProductDetails = asyncHandler(async (req, res) => {
   const { productId } = req.body;
@@ -169,11 +170,48 @@ const productAdd = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, new_product1, "data stored successfully"));
 });
 
+const generalProductAdd = asyncHandler(async (req, res) => {
+  const {
+    city,
+    productId,
+    name,
+    description,
+    categoryId,
+    brand,
+    retailerId,
+    deliveryCharge,
+    variation,
+  } = req.body;
+  if (!(name, description, categoryId, productId, brand)) {
+    throw new apiError(400, "All fields required");
+  }
+  const new_product = new GeneralProductModel(
+    city,
+    productId,
+    name,
+    description,
+    deliveryCharge,
+    categoryId,
+    brand,
+    retailerId,
+    variation
+  );
+//   const jsonData = new_product.toJSON();
+//   const jsonObject = JSON.parse(jsonData);
+  const resp = await addDoc(
+    collection(app, "generalProduct"),
+    new_product.toJSON()
+  );
+  res
+    .status(200)
+    .json(new apiResponse(200, new_product, "Product added successfully"));
+});
 export {
   product,
   getProductDetails,
   productByCategoryId,
   productByproductId,
   productStockUpdate,
+  generalProductAdd,
   productAdd,
 };
