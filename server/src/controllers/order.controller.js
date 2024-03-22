@@ -10,6 +10,7 @@ import {
   where,
   updateDoc,
   orderBy,
+  getDoc,
 } from "firebase/firestore";
 import { notification } from "../utils/notifications.js";
 
@@ -22,15 +23,28 @@ const order = asyncHandler(async (req, res) => {
     const endAt = startAt + pageSize;
 
     const snapshot = await getDocs(
-      query(
-        collection(app, "orderDetails"),
-        orderBy("orderDate", "desc") // order by order date in non increassing order
-      )
+      query(collection(app, "orderDetails"), orderBy("orderDate", "desc"))
     );
 
     const totalItems = snapshot.docs.length;
 
     const data = snapshot.docs.slice(startAt, endAt).map((doc) => doc.data());
+
+    // for each data in the array, get the user details from "userDetails" table and append it to the data
+
+    // for (let i = 0; i < data.length; i++) {
+      // const userSnapshot = await getDocs(
+      //   query(collection(app, "userDetails"), where("uid", "==", data[i].userId))
+      // );
+      // data[i].userDetails = userSnapshot.docs.map((doc) => doc.data())[0];
+      // const retailerSnapshot = await getDocs(
+      //   query(
+      //     collection(app, "retailer"),
+      //     where("id", "==", data[i].retailerId)
+      //   )
+      // );
+      //   data[i].retailerDetails = retailerSnapshot.docs.map((doc) => doc.data())[0];
+    // }
 
     if (data.length > 0) {
       res
@@ -97,20 +111,31 @@ const updateOrder = asyncHandler(async (req, res) => {
 
 const sendToretailer = asyncHandler(async (req, res) => {
   console.log(req.body);
-  const { orderId, retailerId } = req.body;
+  const { orderId, retailerId ,productId,set,stream } = req.body;
   if (!orderId || !retailerId) {
     throw new apiError(400, "Order id and retailerId is required");
   }
   try {
-    // const docRef = doc(app, "orderDetails", orderId)
-    // const updated_data = await updateDoc(docRef, {
-    //     retailerId:retailerId ,
-    //     status:"Processed",
-    // })
-    notification("testing notificatin", "juTtklcvlVOr3qr1dWGfP6yA7Y23");
+    const docRef = doc(app, "orderDetails", orderId)
+    const updated_data = await updateDoc(docRef, {
+        retailerId:retailerId ,
+        status:"Processed",
+    });
+
+    const productRef = doc(app, "product", productId)
+    //update the product such that productRef[set][stream].sku-=1;
+    const productSnapshot = await getDoc(productRef);
+    const productData = productSnapshot.data();
+    const updatedVariation = productData[set][stream].sku -= 1;
+
+    const updated_product = await updateDoc(productRef, {
+      variation: updatedVariation,
+    });
+
+    // notification("testing notificatin", "juTtklcvlVOr3qr1dWGfP6yA7Y23");
     res
       .status(200)
-      .json(new apiResponse(200, { hi: "dllkk" }, "data send succesfully"));
+      .json(new apiResponse(200, updated_data, "data send succesfully"));
     // res.status(200).json(new apiResponse(200, updated_data, "data send succesfully"));
   } catch (error) {
     throw new apiError(400, "Error:", error);
@@ -129,10 +154,30 @@ const getOrderDetails = asyncHandler(async (req, res) => {
   res.status(200).json(new apiResponse(200, data, "data send successfully"));
 });
 
+const changeOrderStatus = asyncHandler(async (req, res) => {
+    const { orderId, status } = req.body;
+    if (!orderId || !status) {
+        throw new apiError(400, "Order id and status is required");
+    }
+    try {
+        const docRef = doc(app, "orderDetails", orderId);
+        const updated_data = await updateDoc(docRef, {
+        status: status,
+        });
+        res
+        .status(200)
+        .json(new apiResponse(200, updated_data, "data send succesfully"));
+    } catch (error) {
+        throw new apiError(400, "Error:", error);
+    }
+    });
+
+
 export {
   order,
   fetchDataByStatus,
   updateOrder,
   sendToretailer,
   getOrderDetails,
+  changeOrderStatus,
 };

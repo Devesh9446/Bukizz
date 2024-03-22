@@ -24,6 +24,12 @@ const List = [
     innerElememt: [],
   },
   {
+    title: "All Product",
+    icon: "images/img_bag.svg",
+    path: "/allProduct",
+    innerElememt: [],
+  },
+  {
     title: "addProduct",
     icon: "images/img_bag.svg",
     path: "/addProduct",

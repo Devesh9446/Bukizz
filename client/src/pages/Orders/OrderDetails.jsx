@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Img, Line, Text } from "components";
+import { Button, Img, Line, SelectBox, Text } from "components";
 import { useLocation } from "react-router-dom";
 import { fetchApi, fetchApi2 } from "utils/fetchApi";
 import { Toast } from "utils/swal";
@@ -20,6 +20,7 @@ const OrderDetails = () => {
     Object.keys(state.cartData[schoolname][productId][set])[0]
   );
   const [sigleProduct, setSingleProduct] = useState();
+  const [currOrderStatus, setCurrOrderStatus] = useState(state?.status);
   const orderStatus = [
     "Initiated",
     "Processed",
@@ -89,6 +90,7 @@ const OrderDetails = () => {
         setSet(updatedSet);
         setStream(updatedStream);
         setTrackNum(updatedTracknum);
+        setCurrOrderStatus(order?.status);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -96,9 +98,18 @@ const OrderDetails = () => {
   };
   const handleRetailer = async () => {
     try {
+      const setIndex = productData.data[0].set.findIndex(
+        (item) => item.name === set
+      );
+      const streamIndex = productData.data[0].stream.findIndex(
+        (item) => item.name === stream
+      );
       const data = {
         orderId: state.orderId,
         retailerId: product.retailerId,
+        productId: productId,
+        set: setIndex,
+        stream: streamIndex,
         // retailerId: "hi govind ji"
       };
       const resp = await fetchApi2("/v1/admin/orders/sendtoretailer", data);
@@ -117,6 +128,30 @@ const OrderDetails = () => {
       });
     }
   };
+
+  const handleChange = async (data) => {
+    try {
+
+      const resp = await fetchApi2("/v1/admin/orders/changeOrderStatus", {
+        orderId: state.orderId,
+        status: data,
+      });
+      if (resp.success) {
+        Toast.fire({
+          icon: "success",
+          title: "Order status updated",
+        });
+        getData();
+      }
+    } catch (error) {
+      console.log("error in updating status", error);
+      Toast.fire({
+        icon: "error",
+        title: "error in updating status",
+      });
+    }
+  }
+
   return (
     <div className="flex flex-col font-opensans gap-[30px] items-center justify-start max-w-[1268px] mx-auto md:px-5 w-full">
       <div className="bg-white-A700 flex flex-col items-center justify-start p-[30px] sm:px-5 rounded-md shadow-bs1 w-full">
@@ -380,63 +415,114 @@ const OrderDetails = () => {
               </Button>
             )}
           </div>
+          <div className="flex flex-col gap-[30px] w-[35%] md:w-full">
+            <div className="bg-white-A700 flex md:flex-1 flex-col gap-[30px] justify-start p-[29px] sm:px-5 rounded-md shadow-bs w-full">
+              <Text
+                className="text-2xl md:text-[22px] text-black-900_01 sm:text-xl"
+                size="txtGilroyMedium24"
+              >
+                Set Order Status
+              </Text>
 
-          <div className="bg-white-A700 flex md:flex-1 flex-col gap-[30px] justify-start p-[29px] sm:px-5 rounded-md shadow-bs1 w-[35%] md:w-full">
-            <Text
-              className="text-2xl md:text-[22px] text-black-900_01 sm:text-xl"
-              size="txtGilroyMedium24"
-            >
-              Track your order
-            </Text>
-            <div className="flex flex-row gap-4 items-center  justify-start md:ml-[0] ml-[78px] mr-[405px] w-2/5 md:w-full">
-              <div className=" h-[450px] relative w-[8%] ">
-                <Line className="absolute bg-blue_gray-100 h-[450px] inset-[0] justify-center m-auto w-1" />
-
-                <div className="absolute flex flex-col inset-[0] items-center justify-between w-[84%]">
-                  {orderStatus.map((item, index) => (
-                    <div key={index}>
-                      {trackNum >= index ? (
-                        <Button
-                          className=" flex h-6 inset-x-[0] items-center justify-center mx-auto outline outline-[1.5px] outline-gray-50 rounded-[50%]  w-6"
-                          shape="circle"
-                          color="blue_A700_01"
-                          size="xs"
-                          variant="fill"
-                        >
+              <div className="flex flex-col gap-[30px] items-start justify-start w-full">
+                <div className="flex flex-col gap-[15px] items-start justify-start w-full">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <Text
+                      className="text-blue_gray-400 text-lg"
+                      size="txtGilroyMedium18"
+                    >
+                      Order Status
+                    </Text>
+                    <Text
+                      className="text-black-900_01 text-lg"
+                      size="txtGilroyMedium18Black90001"
+                    >
+                      {currOrderStatus}
+                      <SelectBox
+                        className="font-bold   text-blue-A700_01 text-left text-lg sm:w-full"
+                        placeholderClassName="text-blue-A700_01"
+                        indicator={
                           <Img
-                            className="h-4"
-                            src="images/img_checkmark.svg"
-                            alt="checkmark"
+                            className="h-6 mr-[0] w-6"
+                            src="images/img_arrowdown_blue_A701.svg"
+                            alt="arrow_down"
                           />
-                        </Button>
-                      ) : (
-                        <div className="bg-gray-50 h-5 outline outline-[1.5px] outline-blue_gray-100 rounded-[50%] w-5"></div>
-                      )}
-                    </div>
-                  ))}
+                        }
+                        isMulti={false}
+                        name="status"
+                        options={orderStatus.map((item) => ({
+                          label: item,
+                          value: item,
+                        }))}
+                        isSearchable={false}
+                        placeholder="Select Order status"
+                        value={currOrderStatus}
+                        onChange={(data) => {
+                          handleChange(data);
+                        }}
+                        size="xs"
+                      />
+                    </Text>
+                  </div>
                 </div>
-
-                {/* <div className="absolute bg-gray-50 bottom-[0] h-5 inset-x-[0] mx-auto outline outline-[1.5px] outline-blue_gray-100 rounded-[50%] w-5"></div> */}
               </div>
-              <div className="flex flex-col items-start justify-between h-[450px]">
-                {orderStatus.map((item, index) => (
-                  <Text
-                    key={index}
-                    className={
-                      trackNum >= index
-                        ? "text-base text-blue-800"
-                        : "text-base text-blue_gray-200"
-                    }
-                    size={
-                      trackNum <= index
-                        ? "txtGilroySemiBold16Blue800"
-                        : "txtGilroySemiBold16Bluegray200"
-                    }
-                  >
-                    {item}
-                  </Text>
-                ))}
-                {/* <Text
+            </div>
+            <div className="bg-white-A700 flex md:flex-1 flex-col gap-[30px] justify-start p-[29px] sm:px-5 rounded-md shadow-bs1 w-full">
+              <Text
+                className="text-2xl md:text-[22px] text-black-900_01 sm:text-xl"
+                size="txtGilroyMedium24"
+              >
+                Track your order
+              </Text>
+              <div className="flex flex-row gap-4 items-center  justify-start md:ml-[0] ml-[78px] mr-[405px] w-2/5 md:w-full">
+                <div className=" h-[450px] relative w-[8%] ">
+                  <Line className="absolute bg-blue_gray-100 h-[450px] inset-[0] justify-center m-auto w-1" />
+
+                  <div className="absolute flex flex-col inset-[0] items-center justify-between w-[84%]">
+                    {orderStatus.map((item, index) => (
+                      <div key={index}>
+                        {trackNum >= index ? (
+                          <Button
+                            className=" flex h-6 inset-x-[0] items-center justify-center mx-auto outline outline-[1.5px] outline-gray-50 rounded-[50%]  w-6"
+                            shape="circle"
+                            color="blue_A700_01"
+                            size="xs"
+                            variant="fill"
+                          >
+                            <Img
+                              className="h-4"
+                              src="images/img_checkmark.svg"
+                              alt="checkmark"
+                            />
+                          </Button>
+                        ) : (
+                          <div className="bg-gray-50 h-5 outline outline-[1.5px] outline-blue_gray-100 rounded-[50%] w-5"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* <div className="absolute bg-gray-50 bottom-[0] h-5 inset-x-[0] mx-auto outline outline-[1.5px] outline-blue_gray-100 rounded-[50%] w-5"></div> */}
+                </div>
+                <div className="flex flex-col items-start justify-between h-[450px]">
+                  {orderStatus.map((item, index) => (
+                    <Text
+                      key={index}
+                      className={
+                        trackNum >= index
+                          ? "text-base text-blue-800"
+                          : "text-base text-blue_gray-200"
+                      }
+                      size={
+                        trackNum <= index
+                          ? "txtGilroySemiBold16Blue800"
+                          : "txtGilroySemiBold16Bluegray200"
+                      }
+                    >
+                      {item}
+                    </Text>
+                  ))}
+                  {/* <Text
                                 className="text-base text-blue-800"
                                 size="txtGilroySemiBold16Blue800"
                             >
@@ -467,6 +553,7 @@ const OrderDetails = () => {
                             >
                                 Order Delivered
                             </Text> */}
+                </div>
               </div>
             </div>
           </div>

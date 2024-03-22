@@ -10,25 +10,25 @@ import { useLocation } from "react-router-dom";
 
 function AddProduct({}) {
   const { state } = useLocation();
-  console.log("state " ,state);
+  console.log("state ", state);
   const [category, setCategory] = useState([]);
   const [retailers, setRetailers] = useState([]);
-
-   const [formData, setFormData] = useState({
-     city: state?.city || [],
-     productId: state?.productId || "",
-     name: state?.name || "",
-     description: state?.description || "",
-     categoryId: state?.categoryId || "",
-     classId: state?.classId || "",
-     board: state?.board || "CBSE",
-     retailerId: state?.retailerId || "",
-     stream: state?.stream ? state.stream.map((element) => element.name) :[],
-     set: state?.set ? state.set.map((element) => element.name) : [],
-     reviewList: state?.reviewList||  [],
-     variation: state?.variation ||  [],
-     deliveryCharge: 0,
-   });
+    const [variants, setVariants] = useState({});
+  const [formData, setFormData] = useState({
+    city: state?.city || [],
+    productId: state?.productId || "",
+    name: state?.name || "",
+    description: state?.description || "",
+    categoryId: state?.categoryId || "",
+    classId: state?.classId || "",
+    board: state?.board || "CBSE",
+    retailerId: state?.retailerId || "",
+    stream: state?.stream ? state.stream.map((element) => element.name) : [],
+    set: state?.set ? state.set.map((element) => element.name) : [],
+    reviewList: state?.reviewList || [],
+    variation: state?.variation || {},
+    deliveryCharge: 0,
+  });
   const fetchRetailers = async () => {
     try {
       const resp = await fetchApi("/v1/admin/getretailer");
@@ -77,7 +77,6 @@ function AddProduct({}) {
     fetchRetailers();
   }, []);
 
- 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "Image") {
@@ -369,44 +368,6 @@ function AddProduct({}) {
                 className="text-blue_gray-900 text-lg"
                 size="txtGilroyMedium18"
               >
-                Category Id
-              </Text>
-            </div>
-            <Input
-              name="categoryId"
-              placeholder="Enter Contact Number"
-              className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-              wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-              type="text"
-              value={formData.categoryId}
-              onChange={handleChange}
-            ></Input>
-          </div> */}
-          {/* <div className="flex flex-col items-center justify-start w-full">
-            <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
-              <Text
-                className="text-blue_gray-900 text-lg"
-                size="txtGilroyMedium18"
-              >
-                Retailer Id
-              </Text>
-            </div>
-            <Input
-              name="retailerId"
-              placeholder="Enter Contact Number"
-              className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-              wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-              type="text"
-              value={formData.retailerId}
-              onChange={handleChange}
-            ></Input>
-          </div> */}
-          <div className="flex flex-col items-center justify-start w-full">
-            <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
-              <Text
-                className="text-blue_gray-900 text-lg"
-                size="txtGilroyMedium18"
-              >
                 Set :
               </Text>
             </div>
@@ -438,21 +399,41 @@ function AddProduct({}) {
               value={formData.stream}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
+
+          <div className="flex flex-col items-center justify-start w-full">
+            <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
+                <Text
+                    className="text-blue_gray-900 text-lg"
+                    size="txtGilroyMedium18"
+                >
+                    Variants :
+                </Text>
+
+            </div>
+            <Variants
+                name="variation"
+                value={formData.variation}
+                set={formData.set}
+                stream={formData.stream}
+                onChange={handleChange}
+                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+            />
+
+            </div>
           <div className="flex flex-col items-center justify-start w-full">
             <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
               <Text
                 className="text-blue_gray-900 text-lg"
                 size="txtGilroyMedium18"
               >
-                Variants :
+                Variation :
               </Text>
             </div>
-            <Variants
+            <Variatiion
               name="variation"
               value={formData.variation}
-              set={formData.set}
-              stream={formData.stream}
               onChange={handleChange}
               className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
               wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
@@ -498,269 +479,295 @@ function AddProduct({}) {
 
 export default AddProduct;
 
-const Variants = (
-  { name, set, stream, wrapClassName, onChange = () => {} },
-  ...props
-) => {
-  const [variants, setVariants] = useState({});
+const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
+    
+    const [variation, setVariation] = useState(value || {});
+    const [variants, setVariants] = useState([]);
+    const [showAddVariant, setShowAddVariant] = useState(false);
+    const [tempVariants, setTempVariants] = useState({name:"",value:[]});
 
-  const handlePriceChange = (setIndex, streamIndex, event) => {
-    const updatedVariants = { ...variants };
-    if (!updatedVariants[setIndex]) {
-      updatedVariants[setIndex] = {};
-    }
-    const { name: fieldName, value: fieldValue } = event.target;
-    console.log(
-      typeof (parseInt(fieldValue, 10) + 0.01),
-      fieldValue,
-      "fieldName"
-    );
-    if (fieldName === "costPerItem"){
-      updatedVariants[setIndex][streamIndex] = {
-        ...updatedVariants[setIndex][streamIndex],
-        [fieldName]: parseInt(fieldValue, 10)+0.01,
-        // [fieldName]: parseFloat(fieldValue),
-      };
-    }
-    else {
-      updatedVariants[setIndex][streamIndex] = {
-        ...updatedVariants[setIndex][streamIndex],
-        [fieldName]: fieldValue,
-      };
-    }
-      // updatedVariants[setIndex][streamIndex] = {
-      //   ...updatedVariants[setIndex][streamIndex],
-      //   [fieldName]: fieldValue,
-      // };
-    setVariants(updatedVariants);
-    onChange({ target: { name: name, value: variants } });
-  };
+    const handletempVariants = (e) => {
 
-  // Define handleChange function if required
-  // const handleAddImage = (setIndex, streamIndex) => {
-  //     const updatedVariants = { ...variants };
-  //     if (!updatedVariants[setIndex]) {
-  //         updatedVariants[setIndex] = {};
-  //     }
-  //     if (!updatedVariants[setIndex][streamIndex]) {
-  //         updatedVariants[setIndex][streamIndex] = {};
-  //     }
-  //     updatedVariants[setIndex][streamIndex] = {
-  //         ...updatedVariants[setIndex][streamIndex],
-  //         image:
-  //     };
-  //     setVariants(updatedVariants);
-  //     onChange({ target: { name: name, value: variants } });
-  // };
+        const { name, value } = e.target;
+        setTempVariants((prevData) => ({ ...prevData, [name]: value }));
+    }
 
-  return (
-    <div className={`${wrapClassName} px-3.5`}>
-      {set.map((setName, setIndex) => (
-        <div key={setIndex}>
-          <Text className="text-blue_gray-900 text-lg" size="txtGilroyMedium18">
-            {`${setName} :`}
-          </Text>
-          <div className={`${wrapClassName} px-7`}>
-            {stream.length === 0 ? (
-              <div>
-                <Text
-                  className="text-blue_gray-900 text-lg"
-                  size="txtGilroyMedium18"
-                >
-                  Stream 1 :
-                </Text>
-                <div className="flex items-center gap-3">
-                  <Input
-                    name="price"
-                    placeholder="Enter Price"
-                    className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                    wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                    type="number"
-                    value={variants[setIndex]?.[0]?.price || 0}
-                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
-                  />
-                  <Input
-                    name="salePrice"
-                    placeholder="Enter Sale Price"
-                    className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                    wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                    type="number"
-                    value={variants[setIndex]?.[0]?.salePrice || 0}
-                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
-                  />
-                  <Input
-                    name="sku"
-                    placeholder="Enter sku"
-                    className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                    wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                    type="number"
-                    value={variants[setIndex]?.[0]?.sku || 0}
-                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
-                  />
-                  <Input
-                    name="costPerItem"
-                    placeholder="Enter cost Per Item"
-                    className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                    wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                    type="text"
-                    value={variants[setIndex]?.[0]?.costPerItem || 0}
-                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
-                  />
-                  <ImageUpload
-                    name="image"
-                    placeholder="Enter image"
-                    className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-60"
-                    wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-                    type="file"
-                    allowMultiple={true}
-                    value={variants[setIndex]?.[0]?.image}
-                    onChange={(e) => handlePriceChange(setIndex, 0, e)}
-                    uploadPath={`product_image/variation/`}
-                  />
-                </div>
-              </div>
-            ) : (
-              stream.map((streamName, streamIndex) => (
-                <div key={streamIndex}>
+    const handleAddVariant = () => {
+        console.log(tempVariants);
+        setShowAddVariant(false);
+        variants.push(tempVariants);
+        var tempJson = {};
+        if(tempVariants.value.length==0 || tempVariants.name==""){
+            return;
+        }
+        tempVariants.value.forEach((element) => {
+            tempJson[`${tempVariants.name}-${element}`] = new VariationData();
+        });
+        // console.log(tempJson);
+        var tvariation =addInVariation(variation,tempJson);
+        console.log("tvariation : " ,tvariation);
+        setVariation(tvariation);
+        setVariants(variants);
+        setTempVariants({name:"",value:[]});
+        onChange({ target: { name: "variation", value: tvariation } });
+    }
+
+    const addInVariation = (tempvar, tempJson) => {
+      
+      if (
+        !tempvar ||
+        Object.keys(tempvar).length === 0 ||
+        tempvar instanceof VariationData
+      ) {
+        return tempJson;
+      }
+
+      
+      const updatedObject = {};
+      console.log("temp var : ",tempvar);
+      
+      Object.keys(tempvar).forEach((key) => {
+        
+        const updatedValue = addInVariation(tempvar[key], tempJson);
+        
+        updatedObject[key] = updatedValue;
+      });
+
+      return updatedObject;
+    };
+
+
+
+    return (
+      <div className={`${wrapClassName} px-3.5`}>
+        <div className="flex flex-col  justify-start w-full">
+          
+          {variants.map((variant, index) => (
+            <div key={index}>
+              <Text
+                className="text-blue_gray-900 font-bold"
+                size="txtGilroyMedium18"
+              >
+                {variant.name} :
+              </Text>
+              <div className="flex items-center gap-3">
+              {variant.value.map((value, index) => (
+                <div key={index} className="flex rounded shadow-sm border-2
+                ">
                   <Text
                     className="text-blue_gray-900 text-lg"
                     size="txtGilroyMedium18"
                   >
-                    {`${streamName} :`}
+                    {value}
                   </Text>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      name="price"
-                      placeholder="Enter Price"
-                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                      type="number"
-                      value={variants[setIndex]?.[streamIndex]?.price || 0}
-                      onChange={(e) =>
-                        handlePriceChange(setIndex, streamIndex, e)
-                      }
-                    />
-                    <Input
-                      name="salePrice"
-                      placeholder="Enter Sale Price"
-                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                      type="number"
-                      value={variants[setIndex]?.[streamIndex]?.salePrice || 0}
-                      onChange={(e) =>
-                        handlePriceChange(setIndex, streamIndex, e)
-                      }
-                    />
-                    <Input
-                      name="sku"
-                      placeholder="Enter sku"
-                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                      type="number"
-                      value={variants[setIndex]?.[streamIndex]?.sku || 0}
-                      onChange={(e) =>
-                        handlePriceChange(setIndex, streamIndex, e)
-                      }
-                    />
-                    <Input
-                      name="costPerItem"
-                      placeholder="Enter cost Per Item"
-                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                      type="text"
-                      value={
-                        variants[setIndex]?.[streamIndex]?.costPerItem || ""
-                      }
-                      onChange={(e) =>
-                        handlePriceChange(setIndex, streamIndex, e)
-                      }
-                    />
-
-                    <ImageUpload
-                      name="image"
-                      placeholder="Enter image"
-                      className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-60"
-                      wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-                      type="file"
-                      allowMultiple={true}
-                      value={variants[setIndex]?.[streamIndex]?.image}
-                      onChange={(e) =>
-                        handlePriceChange(setIndex, streamIndex, e)
-                      }
-                      uploadPath={`product_image/variation/`}
-                    />
-                  </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-      {/* Provide input field for map['0']['0'] if set and stream are empty */}
-      {set.length === 0 && stream.length === 0 && (
-        <div>
-          <Text className="text-blue_gray-900 text-lg" size="txtGilroyMedium18">
-            Set 1 :
-          </Text>
-          <div>
-            <Text
-              className="text-blue_gray-900 text-lg"
-              size="txtGilroyMedium18"
-            >
-              Stream 1 :
-            </Text>
-            <div className="flex items-center gap-3">
-              <Input
-                name="price"
-                placeholder="Enter Price"
-                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                type="number"
-                value={variants[0]?.[0]?.price || 0}
-                onChange={(e) => handlePriceChange(0, 0, e)}
-              />
-              <Input
-                name="salePrice"
-                placeholder="Enter Sale Price"
-                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                type="number"
-                value={variants[0]?.[0]?.salePrice || 0}
-                onChange={(e) => handlePriceChange(0, 0, e)}
-              />
-              <Input
-                name="sku"
-                placeholder="Enter sku"
-                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                type="number"
-                value={variants[0]?.[0]?.sku || 0}
-                onChange={(e) => handlePriceChange(0, 0, e)}
-              />
-              <Input
-                name="costPerItem"
-                placeholder="Enter cost Per Item"
-                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
-                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
-                type="text"
-                value={variants[0]?.[0]?.costPerItem || 0}
-                onChange={(e) => handlePriceChange(0, 0, e)}
-              />
-              <ImageUpload
-                name="image"
-                placeholder="Enter image"
-                className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-60"
-                wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
-                type="file"
-                allowMultiple={true}
-                value={variants[0]?.[0]?.image}
-                onChange={(e) => handlePriceChange(0, 0, e)}
-                uploadPath={`product_image/variation/`}
-              />
+        <hr />
+        {showAddVariant ? (
+          <div
+            className={`${wrapClassName} ${
+              showAddVariant ? "flex" : "hidden"
+            } flex-row px-7`}
+          >
+            <div className={`flex  flex-col items-center justify-start w-full`}>
+              <div
+                className={`flex  flex-col items-center justify-start w-full`}
+              >
+                <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
+                  <Text
+                    className="text-blue_gray-900 text-lg"
+                    size="txtGilroyMedium18"
+                  >
+                    Name :
+                  </Text>
+                </div>
+                <Input
+                  name="name"
+                  placeholder="Enter Class Id"
+                  className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                  wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+                  type="text"
+                  value={tempVariants.name}
+                  onChange={handletempVariants}
+                ></Input>
+              </div>
+              <div className="flex flex-col items-center justify-start w-full">
+                <div className="flex flex-col items-start justify-end pr-1 py-1 w-full">
+                  <Text
+                    className="text-blue_gray-900 text-lg"
+                    size="txtGilroyMedium18"
+                  >
+                    Value :
+                  </Text>
+                </div>
+                <ArrayInput
+                  name="value"
+                  placeholder="Add value"
+                  className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+                  wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+                  type="text"
+                  value={tempVariants.value}
+                  onChange={handletempVariants}
+                />
+              </div>
+              <Button
+                className="cursor-pointer font-medium min-w-[100px] rounded-md text-base text-center"
+                color="blue_A700_01"
+                size="lg"
+                variant="fill"
+                onClick={handleAddVariant}
+              >
+                Add
+              </Button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        ) : (
+          <div className="flex items-center gap-3">
+            <Text
+              className="text-lg cursor-pointer text-blue-600"
+              size="txtGilroyMedium18"
+              onClick={() => setShowAddVariant(true)}
+            >
+              + Add Variant
+            </Text>
+          </div>
+        )}
+      </div>
+    );
 };
+
+const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props }) => {
+    
+
+    return (
+        <div className={`${wrapClassName} px-3.5`}>
+            <div className="flex flex-col  justify-start w-full">
+            {Object.keys(value).map((key1) => {
+                
+                
+                return (
+                  <div key={key1} >
+                    <Text
+                      className="text-blue_gray-900 font-bold"
+                      size="txtGilroyMedium18"
+                    >
+                      {key1.split("-")[1]} :
+                    </Text>
+                    {value[key1] instanceof VariationData ? (
+                      <VariationDataInput />
+                    ) : (
+                      <div className={`${wrapClassName} px-3.5`}>
+                        {Object.keys(value[key1]).map((key2) => {
+                          return (
+                            <div key={key2}>
+                              <Text
+                                className="text-blue_gray-900 font-bold"
+                                size="txtGilroyMedium18"
+                              >
+                                {key2.split("-")[1]} :
+                              </Text>
+                              {value[key1][key2] instanceof VariationData ? (
+                                <VariationDataInput />
+                              ) : (
+                                <div className={`${wrapClassName} px-3.5`}>
+                                  {Object.keys(value[key1][key2]).map(
+                                    (key3) => {
+                                      return (
+                                        <div key={key3}>
+                                          <Text
+                                            className="text-blue_gray-900 font-bold"
+                                            size="txtGilroyMedium18"
+                                          >
+                                            {key3.split("-")[1]} :
+                                          </Text>
+                                          <VariationDataInput />
+                                        </div>
+                                      );
+                                    }
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );})// first level
+            }
+            </div>
+        </div>
+        );
+    
+};
+
+const VariationDataInput =()=>{
+
+    return (
+      <div>
+        <div className="flex items-center gap-3">
+          <Input
+            name="price"
+            placeholder="Enter Price"
+            className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+            wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+            type="number"
+            // value={variants[0]?.[0]?.price || 0}
+            onChange={(e) => handlePriceChange(0, 0, e)}
+          />
+          <Input
+            name="salePrice"
+            placeholder="Enter Sale Price"
+            className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+            wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+            type="number"
+            // value={variants[0]?.[0]?.salePrice || 0}
+            onChange={(e) => handlePriceChange(0, 0, e)}
+          />
+          <Input
+            name="sku"
+            placeholder="Enter sku"
+            className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+            wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+            type="number"
+            // value={variants[0]?.[0]?.sku || 0}
+            onChange={(e) => handlePriceChange(0, 0, e)}
+          />
+          <Input
+            name="costPerItem"
+            placeholder="Enter cost Per Item"
+            className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
+            wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
+            type="text"
+            // value={variants[0]?.[0]?.costPerItem || 0}
+            onChange={(e) => handlePriceChange(0, 0, e)}
+          />
+          <ImageUpload
+            name="image"
+            placeholder="Enter image"
+            className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-60"
+            wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
+            type="file"
+            allowMultiple={true}
+            // value={variants[0]?.[0]?.image}
+            onChange={(e) => handlePriceChange(0, 0, e)}
+            uploadPath={`product_image/variation/`}
+          />
+        </div>
+      </div>
+    );
+}
+
+
+class VariationData{
+    constructor(){
+        this.images=[];
+        this.sku=0;
+        this.salePrice=0;
+        this.price=0;
+    }
+}
