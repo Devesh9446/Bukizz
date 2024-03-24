@@ -43,7 +43,7 @@ const ArrayInput = React.forwardRef(
 
         return (
             <>
-                <div className={wrapClassName}>
+                <div className={`${wrapClassName} p-4`} >
                     <div className={`flex items-center ${className}`}>
                         <input
                             ref={ref}

@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { apiResponse } from "../utils/apiResponse.js";
+import { apiQuueryResponse, apiResponse } from "../utils/apiResponse.js";
 import { app } from "../firebase.js";
 import {
   doc,
@@ -29,12 +29,34 @@ const getProductDetails = asyncHandler(async (req, res) => {
   const data = snapshot.docs.map((doc) => doc.data());
   res.status(200).json(new apiResponse(200, data, "data send successfully"));
 });
-const product = asyncHandler(async (_, res) => {
+const product = asyncHandler(async (req, res) => {
   try {
-    const snapshot = await getDocs(collection(app, "products"));
-    const data = snapshot.docs.map((doc) => doc.data());
-    console.log(snapshot);
-    res.status(200).json(new apiResponse(200, data, "data send successfully"));
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 10;
+
+    const startAt = (page - 1) * pageSize;
+    const endAt = startAt + pageSize;
+
+    const snapshot = await getDocs(
+      query(
+        collection(app, "products")
+        //  orderBy("yourOrderByField")
+      )
+    );
+    const totalItems = snapshot.docs.length;
+
+    const data = snapshot.docs.slice(startAt, endAt).map((doc) => doc.data());
+    res.status(200).json(
+      new apiQuueryResponse(
+        200,
+        page,
+        pageSize,
+        totalItems,
+        Math.ceil(totalItems / pageSize), //totalPages
+        data,
+        "Data sent successfully" // message
+      )
+    );
   } catch (error) {
     throw new apiError(400, error);
   }

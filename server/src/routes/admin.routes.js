@@ -4,6 +4,7 @@ import {
   fetchDataByStatus,
   sendToretailer,
   getOrderDetails,
+  changeOrderStatus,
 } from "../controllers/order.controller.js";
 import { schoolAdd, school } from "../controllers/school.controller.js";
 import { category, categoryAdd } from "../controllers/category.controller.js";
@@ -44,6 +45,7 @@ router.route("/orders").post(order);
 router.route("/orders/readOne").post(getOrderDetails);
 router.route("/orders/c/:/status").post(fetchDataByStatus);
 router.route("/orders/sendtoretailer").post(sendToretailer);
+router.route("/orders/changeOrderStatus").post(changeOrderStatus);
 
 // routes for image upload and delete
 router.route("/imageupload").post(upload.single("Image"), ImageUPloader);

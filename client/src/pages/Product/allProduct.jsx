@@ -10,7 +10,7 @@ import { fetchApi } from "utils/fetchApi";
 import { Toast } from "utils/swal";
 // import UpdateSchools from './UpdateSchools';
 
-function Orders() {
+function AllProduct() {
   const [showAddSchoolsForm, setShowAddSchoolForm] = useState(false);
   const [ordersData, setOrdersData] = useState([]);
   const [query, setQuery] = useState("");
@@ -20,7 +20,7 @@ function Orders() {
   const [totalPages, setTotalPage] = useState(0);
   const handleSort = () => {};
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!showAddSchoolsForm) {
       getData();
     }
@@ -29,7 +29,7 @@ function Orders() {
   const getData = async () => {
     try {
       const query = `page=${page}&limit=${limit}`;
-      const resp = await fetchApi(`/v1/admin/orders?${query}`);
+      const resp = await fetchApi(`/v1/admin/product?${query}`);
       console.log(resp);
       if (resp.success) {
         setTotalPage(resp.totalPages);
@@ -61,7 +61,7 @@ function Orders() {
               className="mb-[5px] mt-4 sm:text-2xl md:text-[26px] text-[28px] text-blue_gray-900"
               size="txtGilroySemiBold28"
             >
-              Orders
+              All Products
             </Text>
             <div className="    ">
               <Button
@@ -73,7 +73,7 @@ function Orders() {
                   setShowAddSchoolForm(true);
                 }}
               >
-                Add Schools
+                Add Products
               </Button>
             </div>
           </div>
@@ -87,14 +87,14 @@ function Orders() {
             <TableViewer
               heading={[
                 "Sr.No",
-                "Order Date",
-                "Name of the school",
-                "Customer Name",
-                "Retailer Name",
-                "orderName",
-                "saleAmount",
-                "status",
-                "cartLength",
+                "Product Id",
+                "Name",
+                "Class Id",
+                "Category Id",
+                "Board",
+                "City",
+                "Delivery Charge",
+                
               ]}
               loading={loading}
             >
@@ -121,7 +121,7 @@ function Orders() {
   );
 }
 
-export default Orders;
+export default AllProduct;
 
 const Row = ({
   data = [],
@@ -153,27 +153,19 @@ const Row = ({
         <tr
           key={index}
           onClick={() => {
-            navigate(`/orderDetails`, { state: el });
+            navigate(`/addProduct`, { state: el });
           }}
         >
           <td key={"sl.no"}>{(page - 1) * limit + index + 1}</td>
-          {/* <td> <Img
-                        className="h-[60px] md:h-auto object-cover rounded-[3px] w-[60px]"
-                        src={el.logo || el.image}
-                        alt={`${el.name}'s Logo`}
-                    />
-                    </td> */}
-          <td key={"orderDate"}>{getDate(el.orderDate)}</td>
-          <td key={"SchoolName"}>
-            {el.cartData && Object.keys(el.cartData)[0]}
-          </td>
 
-          <td key={"CustomerName"}>{el.address?.name}</td>
-          <td key={"RetailerName"}>{el.retailerDetails?.name}</td>
-          <td key={"orderName"}>{el.orderName}</td>
-          <td key={"saleAmount"}>{el.saleAmount}</td>
-          <td key={"status"}>{el.status}</td>
-          <td key={"cartlength"}>{el.cartLength}</td>
+          <td key={"productId"}>{el.productId}</td>
+          <td key={"name"}>{el.name}</td>
+          <td key={"classId"}>{el.classId}</td>
+          <td key={"categoryId"}>{el.categoryId}</td>
+          <td key={"board"}>{el.board}</td>
+          <td key={"city"}>{el.city}</td>
+          <td key={"deliveryCharge"}>{el.deliveryCharge}</td>
+
         </tr>
       ))}
     </>
