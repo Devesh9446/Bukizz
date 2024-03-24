@@ -501,7 +501,7 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
             return;
         }
         tempVariants.value.forEach((element) => {
-            tempJson[`${tempVariants.name}-${element}`] = new VariationData();
+            tempJson[`${tempVariants.name}-${element}`] = defaultVariationData();
         });
         // console.log(tempJson);
         var tvariation =addInVariation(variation,tempJson);
@@ -517,7 +517,7 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
       if (
         !tempvar ||
         Object.keys(tempvar).length === 0 ||
-        tempvar instanceof VariationData
+        isDefaultVariationData(tempvar)
       ) {
         return tempJson;
       }
@@ -541,7 +541,6 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
     return (
       <div className={`${wrapClassName} px-3.5`}>
         <div className="flex flex-col  justify-start w-full">
-          
           {variants.map((variant, index) => (
             <div key={index}>
               <Text
@@ -551,17 +550,20 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
                 {variant.name} :
               </Text>
               <div className="flex items-center gap-3">
-              {variant.value.map((value, index) => (
-                <div key={index} className="flex rounded shadow-sm border-2
-                ">
-                  <Text
-                    className="text-blue_gray-900 text-lg"
-                    size="txtGilroyMedium18"
+                {variant.value.map((value, index) => (
+                  <div
+                    key={index}
+                    className="flex rounded shadow-sm border-2
+                "
                   >
-                    {value}
-                  </Text>
-                </div>
-              ))}
+                    <Text
+                      className="text-blue_gray-900 text-lg"
+                      size="txtGilroyMedium18"
+                    >
+                      {value}
+                    </Text>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -627,13 +629,15 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <Text
-              className="text-lg cursor-pointer text-blue-600"
-              size="txtGilroyMedium18"
-              onClick={() => setShowAddVariant(true)}
-            >
-              + Add Variant
-            </Text>
+            {variants.length < 3 ? (
+              <Text
+                className="text-lg cursor-pointer text-blue-600"
+                size="txtGilroyMedium18"
+                onClick={() => setShowAddVariant(true)}
+              >
+                + Add Variant
+              </Text>
+            ) : null}
           </div>
         )}
       </div>
@@ -641,7 +645,9 @@ const Variants = ({wrapClassName,value,onChange=()=>{},  ...props }) => {
 };
 
 const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props }) => {
-    
+    const handleVariationChange = (updatedValue) => {
+        onChange({ target: { name, value: updatedValue } });
+    };
 
     return (
         <div className={`${wrapClassName} px-3.5`}>
@@ -657,8 +663,13 @@ const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props 
                     >
                       {key1.split("-")[1]} :
                     </Text>
-                    {value[key1] instanceof VariationData ? (
-                      <VariationDataInput />
+                    {
+                    isDefaultVariationData(value[key1])? (
+                      <VariationDataInput
+                      value={value[key1]}
+                                    onChange={(updatedData) => {
+                                        handleVariationChange({ ...value, [key1]: updatedData });
+                                    }} />
                     ) : (
                       <div className={`${wrapClassName} px-3.5`}>
                         {Object.keys(value[key1]).map((key2) => {
@@ -670,8 +681,19 @@ const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props 
                               >
                                 {key2.split("-")[1]} :
                               </Text>
-                              {value[key1][key2] instanceof VariationData ? (
-                                <VariationDataInput />
+                              {isDefaultVariationData(value[key1][key2]) ? (
+                                <VariationDataInput
+                                  value={value[key1][key2]}
+                                  onChange={(updatedData) => {
+                                    handleVariationChange({
+                                      ...value,
+                                      [key1]: {
+                                        ...value[key1],
+                                        [key2]: updatedData,
+                                      },
+                                    });
+                                  }}
+                                />
                               ) : (
                                 <div className={`${wrapClassName} px-3.5`}>
                                   {Object.keys(value[key1][key2]).map(
@@ -684,7 +706,21 @@ const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props 
                                           >
                                             {key3.split("-")[1]} :
                                           </Text>
-                                          <VariationDataInput />
+                                          <VariationDataInput
+                                            value={value[key1][key2][key3]}
+                                            onChange={(updatedData) => {
+                                              handleVariationChange({
+                                                ...value,
+                                                [key1]: {
+                                                  ...value[key1],
+                                                  [key2]: {
+                                                    ...value[key1][key2],
+                                                    [key3]: updatedData,
+                                                  },
+                                                },
+                                              });
+                                            }}
+                                          />
                                         </div>
                                       );
                                     }
@@ -705,8 +741,11 @@ const Variatiion = ({ name,value , wrapClassName, onChange = () => {}, ...props 
     
 };
 
-const VariationDataInput =()=>{
-
+const VariationDataInput =( {value,onChange=()=>{}})=>{
+    const handleInputChange = (name, newValue) => {
+      const updatedData = { ...value, [name]: newValue };
+      onChange(updatedData);
+    };
     return (
       <div>
         <div className="flex items-center gap-3">
@@ -716,8 +755,8 @@ const VariationDataInput =()=>{
             className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
             wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
             type="number"
-            // value={variants[0]?.[0]?.price || 0}
-            onChange={(e) => handlePriceChange(0, 0, e)}
+            value={value.price || 0}
+            onChange={(e) => handleInputChange("price", e.target.value)}
           />
           <Input
             name="salePrice"
@@ -725,8 +764,8 @@ const VariationDataInput =()=>{
             className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
             wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
             type="number"
-            // value={variants[0]?.[0]?.salePrice || 0}
-            onChange={(e) => handlePriceChange(0, 0, e)}
+            value={value.salePrice || 0}
+            onChange={(e) => handleInputChange("salePrice", e.target.value)}
           />
           <Input
             name="sku"
@@ -734,8 +773,8 @@ const VariationDataInput =()=>{
             className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
             wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
             type="number"
-            // value={variants[0]?.[0]?.sku || 0}
-            onChange={(e) => handlePriceChange(0, 0, e)}
+            value={value.sku || 0}
+            onChange={(e) => handleInputChange("sku", e.target.value)}
           />
           <Input
             name="costPerItem"
@@ -743,8 +782,15 @@ const VariationDataInput =()=>{
             className="font-medium md:h-auto p-0 placeholder:text-blue_gray-300 sm:h-auto text-base text-left w-full"
             wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-60"
             type="text"
-            // value={variants[0]?.[0]?.costPerItem || 0}
-            onChange={(e) => handlePriceChange(0, 0, e)}
+            value={value.costPerItem.toString() || "0.0"}
+            onChange={(e) => {
+              const floatValue = parseInt(e.target.value, 10) + 0.01;
+              if (!isNaN(floatValue)) {
+                handleInputChange("costPerItem", floatValue);
+              } else {
+                handleInputChange("costPerItem", 0.0); 
+              }
+            }}
           />
           <ImageUpload
             name="image"
@@ -753,8 +799,8 @@ const VariationDataInput =()=>{
             wrapClassName="border border-blue_gray-100 border-solid mt-1 rounded-lg w-full"
             type="file"
             allowMultiple={true}
-            // value={variants[0]?.[0]?.image}
-            onChange={(e) => handlePriceChange(0, 0, e)}
+            value={value.images || []}
+            onChange={(e) => handleInputChange("images", e.target.files)}
             uploadPath={`product_image/variation/`}
           />
         </div>
@@ -762,12 +808,30 @@ const VariationDataInput =()=>{
     );
 }
 
+const defaultVariationData = () => {
+  return {
+    images: [],
+    sku: 0,
+    salePrice: 0,
+    price: 0,
+    costPerItem: 0.0,
+  };
+};
 
-class VariationData{
-    constructor(){
-        this.images=[];
-        this.sku=0;
-        this.salePrice=0;
-        this.price=0;
-    }
-}
+
+const isDefaultVariationData = (obj) => {
+  return (
+    obj &&
+    typeof obj === "object" &&
+    "images" in obj &&
+    "sku" in obj &&
+    "salePrice" in obj &&
+    "price" in obj &&
+    "costPerItem" in obj &&
+    Array.isArray(obj.images) &&
+    typeof obj.sku === "number" &&
+    typeof obj.salePrice === "number" &&
+    typeof obj.price === "number" &&
+    typeof obj.costPerItem === "number"
+  );
+};
